@@ -1,0 +1,1326 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Utility Maximization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------------
+   CUNEF brand: Naranja 166C #ff5700, Azul 2118C #1a1f6c,
+   Beige 7527C #d6d1c4, Beige Claro #f0ece8.  Type: Taviraj display,
+   Arial body (the manual's substitute for Aeonik).
+   Colour rule: one hue, one meaning, on every plate.
+     AZUL    = what the consumer values  (indifference curves, MRS, demand, WTP)
+     NARANJA = what the market charges    (budget constraint, prices)
+     BLACK   = the choice actually made
+   ------------------------------------------------------------------ */
+:root{
+  --display:"Taviraj",Georgia,"Times New Roman",serif;
+  --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
+
+  --ground:#f0ece8;
+  --panel:#ffffff;
+  --panel-2:#f7f4f1;
+  --beige:#d6d1c4;
+  --ink:#000000;
+  --ink-2:#4a4741;
+  --ink-3:#7d786f;
+  --orange:#ff5700;
+  --azul:#1a1f6c;
+  --azul-soft:#d2e0f3;
+  --fill-azul:rgba(26,31,108,.13);
+  --fill-orange:rgba(255,87,0,.12);
+  --fill-ink:rgba(0,0,0,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0b0b0c; --panel:#16161a; --panel-2:#1d1d21;
+    --beige:#3b362c; --ink:#ffffff; --ink-2:#c8c4bc; --ink-3:#8e8a82;
+    --orange:#ff7a45; --azul:#93a4ea; --azul-soft:#22305e;
+    --fill-azul:rgba(147,164,234,.16);
+    --fill-orange:rgba(255,122,69,.14);
+    --fill-ink:rgba(255,255,255,.08);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0b0b0c; --panel:#16161a; --panel-2:#1d1d21;
+  --beige:#3b362c; --ink:#ffffff; --ink-2:#c8c4bc; --ink-3:#8e8a82;
+  --orange:#ff7a45; --azul:#93a4ea; --azul-soft:#22305e;
+  --fill-azul:rgba(147,164,234,.16);
+  --fill-orange:rgba(255,122,69,.14);
+  --fill-ink:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.52;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+
+/* rail */
+.rail{border-right:1px solid var(--beige);background:var(--panel);padding-block:22px;padding-left:18px;padding-right:14px;position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto}
+.brand{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;margin:0}
+.brand span{display:block;font-family:var(--body);font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-top:7px}
+.rail ol{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column}
+.rail button{width:100%;text-align:left;background:none;border:0;cursor:pointer;font-family:var(--body);font-size:12.5px;line-height:1.3;color:var(--ink-2);padding:7px 6px 7px 0;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:baseline}
+.rail button i{font-style:normal;font-size:10.5px;color:var(--azul);font-weight:700}
+.rail button:hover{color:var(--ink)}
+.rail button[aria-current="true"]{color:var(--ink);font-weight:700}
+.rail button[aria-current="true"] i{color:var(--orange)}
+.rail .group{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:15px 0 3px;padding-top:9px;border-top:1px solid var(--beige)}
+.key{margin-top:20px;padding-top:12px;border-top:2px solid var(--orange);font-size:11.5px;line-height:1.45;color:var(--ink-2)}
+.key b{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.key i{font-style:normal;font-weight:700}
+.key .a{color:var(--azul)} .key .o{color:var(--orange)} .key .k{color:var(--ink)}
+
+main{padding-block:24px 56px;padding-left:32px;padding-right:32px;max-width:1700px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.topbar .sp{flex:1}
+.railbtn,.themebtn{font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--panel);border:1px solid var(--beige);color:var(--ink-2);padding:7px 11px;cursor:pointer}
+.railbtn:hover,.themebtn:hover{border-color:var(--orange);color:var(--ink)}
+body[data-rail="off"] .rail{display:none}
+body[data-rail="off"] .wrap{grid-template-columns:minmax(0,1fr)}
+
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin:0 0 7px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(25px,2.7vw,36px);line-height:1.1;margin:0 0 4px}
+.rule{height:2px;background:var(--orange);width:56px;margin:12px 0 14px}
+h2{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 7px}
+.lead{margin:0;font-size:16.5px;color:var(--ink-2);max-width:66ch}
+p{margin:0 0 11px}
+.step{display:block}
+.phead{max-width:80ch}
+.prose{margin-top:24px;padding-top:18px;border-top:1px solid var(--beige);columns:2;column-gap:42px}
+.prose > *{break-inside:avoid}
+.prose h2{margin-top:4px;break-after:avoid}
+.prose .tw{column-span:all;break-inside:avoid}
+@media (max-width:900px){.prose{columns:1}}
+ul{margin:0 0 12px;padding-left:19px}
+li{margin-bottom:6px}
+.m{font-family:var(--body);color:var(--azul);font-weight:700;white-space:nowrap}
+.eq{font-family:var(--body);font-size:15px;background:var(--panel);border-left:3px solid var(--azul);padding:10px 14px;margin:0 0 12px;line-height:1.75;overflow-x:auto}
+.eq b{color:var(--azul)}
+.eq .g{color:var(--ink-3)}
+.note{font-size:13.5px;color:var(--ink-2);border-top:1px solid var(--beige);padding-top:10px}
+.note b{color:var(--ink)}
+
+/* figures */
+.figs{display:grid;gap:16px;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin-top:2px}
+.figs.one{grid-auto-columns:minmax(0,760px);justify-content:start}
+@media (max-width:900px){.figs,.figs.one{grid-auto-flow:row;grid-auto-columns:minmax(0,1fr)}}
+figure{margin:0;border:1px solid var(--beige);background:var(--panel);padding:10px 12px 8px}
+figcaption{font-size:11.5px;line-height:1.4;color:var(--ink-2);margin-top:5px;border-top:1px solid var(--beige);padding-top:7px}
+figcaption b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+svg.fig{display:block;width:100%;max-width:100%;height:auto}
+svg.fig[data-drag],svg.fig[data-drag2]{cursor:grab;touch-action:none}
+svg.fig[data-drag]:active,svg.fig[data-drag2]:active{cursor:grabbing}
+.fig text{font-family:Arial,Helvetica,sans-serif;font-size:13px;fill:var(--ink-2)}
+.fig .tick{font-size:12px;fill:var(--ink-3)}
+.fig .axlab{font-size:12.5px;font-weight:700;fill:var(--ink-3)}
+.fig .clab{font-size:14px;font-weight:700}
+.fig .anno{font-size:13px;fill:var(--ink-2)}
+.fig .big{font-size:14px;font-weight:700;fill:var(--ink)}
+.fig .grid{stroke:var(--beige);stroke-width:1;fill:none;opacity:.7}
+.fig .axis{stroke:var(--ink-3);stroke-width:1.2;fill:none}
+.fig .arw{fill:var(--ink-3)}
+.fig .guide{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3;fill:none}
+.fig .curve{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.c-a{stroke:var(--azul)}    .t-a{fill:var(--azul)}
+.c-o{stroke:var(--orange)}  .t-o{fill:var(--orange)}
+.c-k{stroke:var(--ink)}     .t-k{fill:var(--ink)}
+.c-m{stroke:var(--ink-3)}   .t-m{fill:var(--ink-3)}
+.f-a{fill:var(--fill-azul)} .f-o{fill:var(--fill-orange)} .f-k{fill:var(--fill-ink)}
+.dot{stroke:var(--panel);stroke-width:1.5}
+.handle{stroke:var(--panel);stroke-width:2.5}
+
+/* controls */
+.ctrls{display:flex;flex-wrap:wrap;gap:13px 20px;align-items:flex-end;margin:14px 0 12px;padding:12px 14px;border:1px solid var(--beige);background:var(--panel)}
+.ctrl{display:flex;flex-direction:column;gap:4px;min-width:146px}
+.ctrl label{font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;gap:10px}
+.ctrl label b{color:var(--azul);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:18px;background:none;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--beige)}
+input[type=range]::-moz-range-track{height:2px;background:var(--beige)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--orange);margin-top:-5.5px;border:0}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--orange)}
+input[type=range]:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.seg{display:flex;border:1px solid var(--beige)}
+.seg button{font-family:var(--body);font-size:12px;padding:6px 11px;background:var(--panel);border:0;border-right:1px solid var(--beige);color:var(--ink-2);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--azul);color:#fff}
+.act{font-family:var(--body);font-size:12.5px;padding:8px 13px;background:var(--panel);border:1px solid var(--beige);color:var(--ink);cursor:pointer}
+.act:hover{border-color:var(--orange)}
+.act:disabled{opacity:.35;cursor:default}
+.act.buy{border-color:var(--azul);color:var(--azul);font-weight:700}
+.act.buy:hover:not(:disabled){background:var(--azul);color:#fff}
+.chk{font-size:12.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center;cursor:pointer}
+.chk input{accent-color:var(--orange);width:14px;height:14px}
+
+/* read-outs */
+.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--beige);border:1px solid var(--beige);margin:0 0 12px}
+.stat{background:var(--panel);padding:8px 11px;flex:1 1 112px}
+.stat dt{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-3);margin:0 0 2px}
+.stat dd{margin:0;font-size:17px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.verdict{font-size:14px;padding:10px 14px;background:var(--panel);border-left:3px solid var(--orange);margin:0 0 12px}
+.verdict.ok{border-color:var(--azul)}
+.verdict.no{border-color:var(--orange)}
+.verdict b{color:var(--azul)}
+
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 12px;background:var(--panel)}
+th,td{text-align:right;padding:8px 11px;border-bottom:1px solid var(--beige)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-3)}
+td{font-variant-numeric:tabular-nums}
+td small{display:block;font-size:10.5px;color:var(--ink-3)}
+td.has{background:var(--azul-soft)}
+td.best{outline:2px solid var(--azul);outline-offset:-2px;font-weight:700;color:var(--azul)}
+tbody tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto;border:1px solid var(--beige)}
+.tlegend{font-size:11.5px;color:var(--ink-3);margin:-6px 0 12px;display:flex;gap:16px;flex-wrap:wrap}
+.tlegend span{display:flex;align-items:center;gap:6px}
+.sw{width:13px;height:13px;display:inline-block;border:1px solid var(--beige)}
+.sw.has{background:var(--azul-soft)}
+.sw.best{outline:2px solid var(--azul);outline-offset:-2px}
+
+.pager{display:flex;gap:10px;align-items:center;margin-top:26px;padding-top:14px;border-top:1px solid var(--beige)}
+.pager .sp{flex:1}
+.pager .cnt{font-size:11px;color:var(--ink-3);letter-spacing:.06em}
+
+@media (max-width:960px){
+  .wrap{grid-template-columns:1fr}
+  .rail{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--beige);padding-right:18px}
+  .rail ol{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .rail button{width:auto;white-space:nowrap;border:1px solid var(--beige);padding:6px 9px;grid-template-columns:auto auto}
+  .rail .group,.key{display:none}
+  main{padding-left:18px;padding-right:18px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<nav class="rail" aria-label="Plates">
+  <p class="brand">Utility Maximization<span>Microeconomics</span></p>
+  <ol id="rail"></ol>
+  <div class="key"><b>Reading the figures</b>
+    <i class="a">Blue</i> — what you value<br>
+    <i class="o">Orange</i> — what the market charges<br>
+    <i class="k">Black</i> — the bundle you choose
+  </div>
+</nav>
+
+<main>
+  <div class="topbar">
+    <button class="railbtn" id="railToggle" type="button" aria-expanded="true">‹ Hide plates</button>
+    <span class="sp"></span>
+    <button class="themebtn" id="theme" type="button">Theme</button>
+  </div>
+  <div id="stage"></div>
+  <div class="pager">
+    <button class="act" id="prev" type="button">← Previous</button>
+    <button class="act" id="next" type="button">Next →</button>
+    <span class="sp"></span>
+    <span class="cnt" id="cnt"></span>
+  </div>
+</main>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Numbers.  The indifference-curve example is the one from the
+   course slides: U = x·y, curve x·y = 32, MRS = y/x, with the
+   points (2,16) and (8,4).  Prices €2 and €4 and income €32 make
+   (8,4) the optimum, so MRS = 0.5 = Px/Py exactly as on slide 18.
+   ============================================================ */
+const IC_K = 32;
+const ic_y = (x,k)=>k/x;
+const mrs   = (x,y)=>y/x;
+
+// Plate 1 — two riskless assets
+const ASSET = {vx:55, vy:230};
+
+// Plate 3 — declining marginal utility, three goods
+const MU = {
+  coke:   {name:"Coke",   unit:"can",  plural:"cans",   mu:[15,12,9,7,5,3]},
+  bread:  {name:"Bread",  unit:"loaf", plural:"loaves", mu:[40,28,21,16,11,6]},
+  coffee: {name:"Coffee", unit:"cup",  plural:"cups",   mu:[21,15,12,9,6,3]}
+};
+const GOODS = ["coke","bread","coffee"];
+
+// Plate 7 — perfect substitutes
+const SUB = {ax:1.2, ay:1.0};
+
+
+const fmt = (x,d=1)=>Number.isFinite(x)?x.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const eur = (x,d=2)=>"€"+fmt(x,d);
+
+/* ============================================================
+   SVG plotting kit.  mt() turns x_1 and x^2 into real sub- and
+   superscripts, so no label ever reads "P_x".
+   ============================================================ */
+function mt(s){
+  return String(s)
+    .replace(/([A-Za-z0-9*)])\^([A-Za-z0-9*+-]+)/g,(m,a,b)=>a+'<tspan baseline-shift="super" font-size="72%">'+b+'</tspan>')
+    .replace(/([A-Za-z0-9*)])_([A-Za-z0-9*]+)/g,(m,a,b)=>a+'<tspan baseline-shift="-22%" font-size="72%">'+b+'</tspan>');
+}
+
+// the same, for HTML prose: x_1 becomes a real <sub>
+function mh(s){
+  return String(s)
+    .replace(/([A-Za-z0-9*)])\^([A-Za-z0-9*+-]+)/g,(m,a,b)=>a+"<sup>"+b+"</sup>")
+    .replace(/([A-Za-z0-9*)])_([A-Za-z0-9*]+)/g,(m,a,b)=>a+"<sub>"+b+"</sub>");
+}
+
+let __uid = 0;
+function Plot(opt){
+  const o = Object.assign({
+    w:560,h:430,x0:0,x1:10,y0:0,y1:10,
+    padL:54,padR:74,padT:34,padB:44,
+    xlab:"",ylab:"",aria:"",drag:null,drag2:null,dfun:null,dmin:null,dmax:null
+  },opt);
+  const u = "u"+(++__uid);
+  const iw = o.w-o.padL-o.padR, ih = o.h-o.padT-o.padB;
+  const X = v=>o.padL+(v-o.x0)/(o.x1-o.x0)*iw;
+  const Y = v=>o.padT+ih-(v-o.y0)/(o.y1-o.y0)*ih;
+  const back=[],body=[],front=[];
+  const P = {X,Y,o,u,
+    axes(xt,yt){
+      const L=[];
+      (yt||[]).forEach(t=>L.push(`<line class="grid" x1="${X(o.x0)}" y1="${Y(t.v)}" x2="${X(o.x1)}" y2="${Y(t.v)}"/>`));
+      (xt||[]).forEach(t=>L.push(`<line class="grid" x1="${X(t.v)}" y1="${Y(o.y0)}" x2="${X(t.v)}" y2="${o.padT}"/>`));
+      L.push(`<line class="axis" x1="${o.padL}" y1="${Y(o.y0)}" x2="${o.padL+iw+15}" y2="${Y(o.y0)}" marker-end="url(#${u}-arw)"/>`);
+      L.push(`<line class="axis" x1="${o.padL}" y1="${Y(o.y0)}" x2="${o.padL}" y2="${o.padT-15}" marker-end="url(#${u}-arw)"/>`);
+      (xt||[]).forEach(t=>L.push(`<text class="tick" x="${X(t.v)}" y="${Y(o.y0)+16}" text-anchor="middle">${mt(t.t!==undefined?t.t:t.v)}</text>`));
+      (yt||[]).forEach(t=>L.push(`<text class="tick" x="${o.padL-8}" y="${Y(t.v)+4}" text-anchor="end">${mt(t.t!==undefined?t.t:t.v)}</text>`));
+      L.push(`<text class="axlab" x="${o.padL+iw+13}" y="${Y(o.y0)+20}" text-anchor="start">${mt(o.xlab)}</text>`);
+      L.push(`<text class="axlab" x="6" y="${o.padT-19}" text-anchor="start">${mt(o.ylab)}</text>`);
+      back.push(L.join(""));
+      return P;
+    },
+    curve(f,c){
+      c=c||{};
+      const from=c.from!==undefined?c.from:o.x0, to=c.to!==undefined?c.to:o.x1, n=c.n||180;
+      const pts=[];
+      for(let i=0;i<=n;i++){const x=from+(to-from)*i/n,y=f(x); if(Number.isFinite(y)) pts.push(X(x).toFixed(1)+","+Y(y).toFixed(1));}
+      if(pts.length>1) body.push(`<g clip-path="url(#${u}-clip)"><polyline class="curve ${c.cls||"c-k"}" points="${pts.join(" ")}" stroke-width="${c.w||2.4}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      if(c.label!==undefined){
+        const lx=c.labelAt!==undefined?c.labelAt:to, ly=c.labelY!==undefined?c.labelY:f(lx);
+        front.push(`<text class="clab ${c.tcls||"t-k"}" x="${X(lx)+(c.ldx!==undefined?c.ldx:8)}" y="${Y(ly)+(c.ldy!==undefined?c.ldy:4)}" text-anchor="${c.lanchor||"start"}">${mt(c.label)}</text>`);
+      }
+      return P;
+    },
+    line(pts,c){
+      c=c||{};
+      const s=pts.filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1])).map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ");
+      body.push(`<g clip-path="url(#${u}-clip)"><polyline class="curve ${c.cls||"c-k"}" points="${s}" stroke-width="${c.w||2.4}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      return P;
+    },
+    poly(pts,c){
+      c=c||{};
+      const s=pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ");
+      body.push(`<g clip-path="url(#${u}-clip)"><polygon class="${c.cls||"f-a"}" points="${s}" stroke="none"/></g>`);
+      return P;
+    },
+    seg(x1,y1,x2,y2,c){
+      c=c||{};
+      body.push(`<g clip-path="url(#${u}-clip)"><line class="${c.cls||"guide"}" x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke-width="${c.w||1}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      return P;
+    },
+    dot(x,y,c){
+      c=c||{};
+      front.push(`<circle class="${c.cls||"dot"}" cx="${X(x)}" cy="${Y(y)}" r="${c.r||4.5}" fill="${c.fill||"var(--ink)"}"/>`);
+      if(c.label) front.push(`<text class="big" x="${X(x)+(c.ldx||9)}" y="${Y(y)+(c.ldy||-9)}" text-anchor="${c.anchor||"start"}">${mt(c.label)}</text>`);
+      return P;
+    },
+    txt(x,y,s,c){
+      c=c||{};
+      front.push(`<text class="${c.cls||"anno"}" x="${X(x)+(c.dx||0)}" y="${Y(y)+(c.dy||0)}" text-anchor="${c.anchor||"middle"}">${mt(s)}</text>`);
+      return P;
+    },
+    svg(){
+      const defs=`<defs><marker id="${u}-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path class="arw" d="M0,1.5 L9,5 L0,8.5 z"/></marker>
+        <clipPath id="${u}-clip"><rect x="${o.padL-1}" y="${o.padT-8}" width="${iw+10}" height="${ih+9}"/></clipPath></defs>`;
+      const geo = ` data-w="${o.w}" data-padl="${o.padL}" data-padt="${o.padT}" data-iw="${iw}" data-ih="${ih}" data-x0="${o.x0}" data-x1="${o.x1}" data-y0="${o.y0}" data-y1="${o.y1}" data-dmin="${o.dmin}" data-dmax="${o.dmax}"`;
+      const dg = o.drag2 ? ` data-drag2="${o.drag2}" data-dfun="${o.dfun||"xy"}"`+geo
+               : (o.drag ? ` data-drag="${o.drag}"`+geo : "");
+      return `<svg class="fig" viewBox="0 0 ${o.w} ${o.h}" role="img" aria-label="${o.aria}"${dg}>${defs}${back.join("")}${body.join("")}${front.join("")}</svg>`;
+    }
+  };
+  return P;
+}
+function ticks(lo,hi,step,dec){
+  const out=[];
+  for(let v=lo;v<=hi+1e-9;v+=step) out.push({v:+v.toFixed(6),t:fmt(v,dec||0)});
+  return out;
+}
+// round tick marks between lo and hi, roughly n of them
+const NICE=[0.5,1,2,2.5,5,10,20,25,50,100];
+function autoTicks(lo,hi,n){
+  const raw=(hi-lo)/(n||5);
+  let step=NICE[NICE.length-1];
+  for(const s of NICE){ if(s>=raw){step=s;break;} }
+  const out=[], start=Math.ceil(lo/step)*step;
+  for(let v=start;v<=hi+1e-9;v+=step) out.push({v:+v.toFixed(6),t:fmt(v,step<1?1:0)});
+  return out;
+}
+const fig=(svg,t,c)=>`<figure>${svg}<figcaption><b>${t}</b>${c}</figcaption></figure>`;
+
+/* ============================================================
+   State
+   ============================================================ */
+const S = {
+  step:1,
+  p1:{px:50,py:200},
+  p2:{muc:6,mub:10,pc:2,pb:4,I:20},
+  p3:{pc:2,pb:5,pk:3,I:20,bought:{coke:0,bread:0,coffee:0},msg:null,ok:null},
+  p4:{x:8},
+  p5:{px:2,py:4,I:32,show:"base"},
+  p6:{px:2,py:4,I:32,k:14},
+  p7:{px:2,py:1,I:12,k:8},
+  p8:{px:2,trace:[]},
+  p9:{p:2, lam:5}
+};
+
+const PLATES = [
+  {n:1,t:"Returns per euro",           g:"Bang per buck"},
+  {n:2,t:"Marginal utility per euro",  g:"Bang per buck"},
+  {n:3,t:"Exercise: three goods",      g:"Bang per buck"},
+  {n:4,t:"Indifference curves and the MRS", g:"Optimal bundle"},
+  {n:5,t:"The budget constraint",      g:"Optimal bundle"},
+  {n:6,t:"Utility maximization",       g:"Optimal bundle"},
+  {n:7,t:"Perfect substitutes",        g:"Optimal bundle"},
+  {n:8,t:"The individual demand curve",g:"Demand"},
+  {n:9,t:"Willingness to pay",         g:"Demand"}
+];
+
+/* ============================================================
+   Plate 1 — returns per euro.  No figure: this is arithmetic,
+   and it is not a diagram the course uses.
+   ============================================================ */
+function plate1(){
+  const {px,py}=S.p1,{vx,vy}=ASSET;
+  const rx=vx/px, ry=vy/py;
+  const win = rx>ry?"X":(ry>rx?"Y":"either");
+  const fair = vy/rx;
+  return {
+    eyebrow:"Plate 1 · Bang per buck",
+    h1:"Returns per euro",
+    lead:`Two riskless assets, both paying out in a year. You have one more euro to invest. Where does it go?`,
+    ctrls:`
+      <div class="ctrl"><label>Price of asset X <b>${eur(px,0)}</b></label>
+        <input type="range" data-num="p1.px" min="30" max="80" step="1" value="${px}"></div>
+      <div class="ctrl"><label>Price of asset Y <b>${eur(py,0)}</b></label>
+        <input type="range" data-num="p1.py" min="140" max="280" step="5" value="${py}"></div>`,
+    panel:`<div class="tw"><table>
+      <thead><tr><th>Asset</th><th>Price</th><th>Pays</th><th>€ back per € invested</th><th>Net return</th></tr></thead>
+      <tbody>
+        <tr><td>X</td><td>${eur(px,0)}</td><td>${eur(vx,0)}</td><td class="${rx>=ry?"best":""}">${fmt(rx,3)}</td><td>${fmt((rx-1)*100,1)}%</td></tr>
+        <tr><td>Y</td><td>${eur(py,0)}</td><td>${eur(vy,0)}</td><td class="${ry>=rx?"best":""}">${fmt(ry,3)}</td><td>${fmt((ry-1)*100,1)}%</td></tr>
+      </tbody></table></div>`,
+    verdict:{c:"ok",s:`The last euro goes to <b>asset ${win}</b>. Not because it pays more, but because it pays more <b>per euro</b>.`},
+    text:`
+      <p>Nobody answers "Y, because ${eur(vy,0)} beats ${eur(vx,0)}". Everyone divides by the price first. That reflex is the whole of this deck.</p>
+      <div class="eq">V_X / P_X &nbsp;vs&nbsp; V_Y / P_Y<br><span class="g">benefit per euro, compared</span></div>
+      <h2>Why the two returns end up equal</h2>
+      <p>If Y is the better buy, everyone buys Y, its price rises and its return per euro falls. It stops at ${eur(fair,0)}, where</p>
+      <div class="eq"><b>V_X / P_X = V_Y / P_Y</b></div>
+      <p>Consumer theory is the same equation with one difference. Here the <b>price</b> moved. In a shop prices are given, so what moves instead is the benefit of an extra unit: the tenth coffee is not worth what the first was.</p>
+      <p class="note">Both assets are certain and differ only in price, so there is no risk premium and no reason to hold both. Uncertainty belongs to a later topic; the marginal reasoning is unchanged.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 2 — marginal utility per euro, appetites fixed
+   ============================================================ */
+function plate2(){
+  const st=S.p2,{muc,mub,pc,pb,I}=st;
+  const bc=muc/pc, bb=mub/pb;
+  const tie=mub*pc/muc;
+  const best=bc>bb?"coke":(bb>bc?"bread":"either");
+  const Uc=muc*I/pc, Ub=mub*I/pb;
+  return {
+    eyebrow:"Plate 2 · Bang per buck",
+    h1:"Marginal utility per euro",
+    lead:`An extra can of coke is worth ${fmt(muc,0)} utils to you, an extra loaf of bread ${fmt(mub,0)}. They are not substitutes — one is a drink, one is dinner. Where does the last euro go?`,
+    ctrls:`
+      <div class="ctrl"><label>MU of a can <b>${fmt(muc,0)}</b></label>
+        <input type="range" data-num="p2.muc" min="2" max="20" step="1" value="${muc}"></div>
+      <div class="ctrl"><label>MU of a loaf <b>${fmt(mub,0)}</b></label>
+        <input type="range" data-num="p2.mub" min="2" max="30" step="1" value="${mub}"></div>
+      <div class="ctrl"><label>Price of coke <b>${eur(pc,2)}</b></label>
+        <input type="range" data-num="p2.pc" min="1" max="6" step="0.5" value="${pc}"></div>
+      <div class="ctrl"><label>Price of bread <b>${eur(pb,2)}</b></label>
+        <input type="range" data-num="p2.pb" min="1" max="8" step="0.5" value="${pb}"></div>`,
+    panel:`<div class="tw"><table>
+      <thead><tr><th>Good</th><th>Marginal utility</th><th>Price</th><th>Utils per euro</th><th>All €${fmt(I,0)} on it</th></tr></thead>
+      <tbody>
+        <tr><td>Coke</td><td>${fmt(muc,0)} per can</td><td>${eur(pc,2)}</td><td class="${bc>=bb?"best":""}">${fmt(bc,2)}</td><td>${fmt(I/pc,1)} cans → ${fmt(Uc,0)} utils</td></tr>
+        <tr><td>Bread</td><td>${fmt(mub,0)} per loaf</td><td>${eur(pb,2)}</td><td class="${bb>=bc?"best":""}">${fmt(bb,2)}</td><td>${fmt(I/pb,1)} loaves → ${fmt(Ub,0)} utils</td></tr>
+      </tbody></table></div>`,
+    verdict:{c:"no",s:`The last euro goes to <b>${best}</b>. But so does every other euro — and that is the problem.`},
+    text:`
+      <p>Bread wins per loaf and can still lose per euro. Bread only overtakes coke once its price falls below <b>${eur(tie,2)}</b>.</p>
+      <h2>The model now says something absurd</h2>
+      <p>Nothing here depends on how much you have already bought, so every euro is the last euro. The answer is: put the whole €${fmt(I,0)} into ${best}.</p>
+      <ul>
+        <li>All coke: ${fmt(I/pc,1)} cans, ${fmt(Uc,0)} utils.</li>
+        <li>All bread: ${fmt(I/pb,1)} loaves, ${fmt(Ub,0)} utils.</li>
+        <li>Anything in between: worse than the better of the two.</li>
+      </ul>
+      <p>You do not do this. The faulty assumption is not the arithmetic — it is the word <b>fixed</b>. Constant marginal utility means the sixteenth can thrills you as much as the first.</p>
+      <div class="eq">MU_coke / P_coke = MU_bread / P_bread<br><span class="g">impossible while marginal utilities are constants</span></div>
+      <p class="note">Constant marginal utilities also make the indifference curves straight — the <b>perfect substitutes</b> case of Plate 7. A corner solution is correct there and wrong here, which tells you the assumption, not the rule, is at fault.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 3 — the exercise.  One table, three buttons, no figures.
+   ============================================================ */
+function p3price(g){ return g==="coke"?S.p3.pc:g==="bread"?S.p3.pb:S.p3.pk; }
+function p3state(){
+  const st=S.p3;
+  const spent=GOODS.reduce((s,g)=>s+st.bought[g]*p3price(g),0);
+  const left=st.I-spent;
+  const utils=GOODS.reduce((s,g)=>{let t=0;for(let i=0;i<st.bought[g];i++)t+=MU[g].mu[i];return s+t;},0);
+  let best=null,bestv=-1;
+  GOODS.forEach(g=>{
+    const n=st.bought[g];
+    if(n>=MU[g].mu.length||p3price(g)>left+1e-9) return;
+    const v=MU[g].mu[n]/p3price(g);
+    if(v>bestv+1e-9){bestv=v;best=g;}
+  });
+  return {spent,left,utils,best,bestv};
+}
+function p3optimum(){
+  const b={coke:0,bread:0,coffee:0}; let s=0,u=0;
+  for(let i=0;i<60;i++){
+    let bg=null,bv=-1;
+    GOODS.forEach(g=>{
+      if(b[g]>=MU[g].mu.length||p3price(g)>S.p3.I-s+1e-9) return;
+      const v=MU[g].mu[b[g]]/p3price(g);
+      if(v>bv+1e-9){bv=v;bg=g;}
+    });
+    if(!bg) break;
+    u+=MU[bg].mu[b[bg]]; b[bg]++; s+=p3price(bg);
+  }
+  return {basket:b,spent:s,utils:u};
+}
+function plate3(){
+  const st=S.p3;
+  const {spent,left,utils,best,bestv}=p3state();
+  const opt=p3optimum();
+  const done=best===null;
+  const rows=[];
+  for(let i=0;i<6;i++){
+    rows.push(`<tr><td>${i+1}</td>`+GOODS.map(g=>{
+      const v=MU[g].mu[i]/p3price(g);
+      const has=i<st.bought[g];
+      const isBest=(!done && g===best && i===st.bought[g]);
+      return `<td class="${has?"has":""}${isBest?" best":""}">${fmt(v,2)}<small>${fmt(MU[g].mu[i],0)} utils</small></td>`;
+    }).join("")+`</tr>`);
+  }
+  const verdict = st.msg ? {c:st.ok?"ok":"no",s:st.msg}
+    : (done ? {c:"ok",s:`Budget spent. The last euro on each good bought you about the same satisfaction — <b>that is the optimum</b>.`}
+            : {c:"",s:`${eur(left,2)} left. Which good gets the next euro?`});
+  return {
+    eyebrow:"Plate 3 · Bang per buck",
+    h1:"Exercise: three goods",
+    lead:`Now the second can is worth less than the first. Each column falls as you buy more. Spend €${fmt(st.I,0)} by always taking the highest number still available.`,
+    ctrls:`
+      <div class="ctrl"><label>Price of coke <b>${eur(st.pc,2)}</b></label>
+        <input type="range" data-num="p3.pc" min="1" max="5" step="0.5" value="${st.pc}"></div>
+      <div class="ctrl"><label>Price of bread <b>${eur(st.pb,2)}</b></label>
+        <input type="range" data-num="p3.pb" min="2" max="8" step="0.5" value="${st.pb}"></div>
+      <div class="ctrl"><label>Price of coffee <b>${eur(st.pk,2)}</b></label>
+        <input type="range" data-num="p3.pk" min="1" max="6" step="0.5" value="${st.pk}"></div>
+      <div class="ctrl"><label>Budget <b>${eur(st.I,0)}</b></label>
+        <input type="range" data-num="p3.I" min="10" max="36" step="2" value="${st.I}"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+        ${GOODS.map(g=>`<button class="act buy" type="button" data-buy="${g}" ${st.bought[g]>=MU[g].mu.length||p3price(g)>left+1e-9?"disabled":""}>Buy a ${MU[g].unit} · ${eur(p3price(g),2)}</button>`).join("")}
+        <button class="act" type="button" data-act="p3auto">Spend it all</button>
+        <button class="act" type="button" data-act="p3reset">Reset</button>
+      </div>`,
+    verdict,
+    panel:`<div class="tw"><table>
+        <thead><tr><th>Unit</th>${GOODS.map(g=>`<th>${MU[g].name} · ${eur(p3price(g),2)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.join("")}</tbody>
+      </table></div>
+      <div class="tlegend">
+        <span>Utils per euro for each successive unit.</span>
+        <span><i class="sw has"></i> already bought</span>
+        <span><i class="sw best"></i> best still available</span>
+      </div>`,
+    stats:[
+      ["Spent",eur(spent,2)],["Left",eur(left,2)],
+      ["Basket",`${st.bought.coke} / ${st.bought.bread} / ${st.bought.coffee}`],
+      ["Utils",fmt(utils,0)],["Best possible",fmt(opt.utils,0)]
+    ],
+    text:`
+      <p>Every purchase moves you one row down that column, so its utils per euro falls and another good takes the lead. The basket ends up spread across all three.</p>
+      <h2>Where it stops</h2>
+      <p>When the money runs out the last euro spent on each good has bought roughly the same satisfaction:</p>
+      <div class="eq"><b>MU_coke / P_coke = MU_bread / P_bread = MU_coffee / P_coffee</b></div>
+      <p>If they were not equal you would not be finished: move a euro from the low one to the high one and utility rises at no extra cost. Being unable to improve by reshuffling one euro <b>is</b> the optimum.</p>
+      <p>At these prices the answer is ${opt.basket.coke} cans, ${opt.basket.bread} loaves and ${opt.basket.coffee} cups — €${fmt(opt.spent,0)} exactly, ${fmt(opt.utils,0)} utils. Change a price and the basket changes. That is a demand curve in disguise, and Plate 8 draws it.</p>
+      <p class="note">Units are lumpy here, so the equality is approximate — you cannot buy two thirds of a loaf. With divisible goods it holds exactly. And utils are never measured, only compared: what matters is the <b>ratio</b> of marginal utilities.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 4 — indifference curves and the MRS
+   ============================================================ */
+function plate4(){
+  const st=S.p4;
+  const xmax=18, ymax=18;
+  const x=Math.min(Math.max(st.x, IC_K/(ymax-0.6)), xmax-0.6);
+  st.x=x;
+  const y=ic_y(x,IC_K), m=mrs(x,y);
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:80,
+    xlab:"coke",ylab:"bread",drag:"p4.x",dmin:IC_K/(ymax-0.6),dmax:xmax-0.6,
+    aria:"An indifference curve with a tangent line at a draggable point; the slope of the tangent is the marginal rate of substitution."});
+  A.axes(ticks(0,18,2),ticks(0,18,2));
+  A.curve(t=>ic_y(t,IC_K),{from:IC_K/(ymax-0.2),to:xmax,cls:"c-a",w:2.8,label:"U = 32",tcls:"t-a",labelAt:xmax*0.74,ldy:-14});
+  A.seg(Math.max(0,x-3.4),y+m*3.4,x+3.4,y-m*3.4,{cls:"c-k",w:1.6});
+  A.dot(x,y,{r:7,fill:"var(--azul)",cls:"handle"});
+  A.txt(x,y,"("+fmt(x,1)+", "+fmt(y,1)+")",{cls:"big",dx:13,dy:-14,anchor:"start"});
+  A.txt(x,y,"MRS = "+fmt(m,2),{cls:"anno",dx:13,dy:4,anchor:"start"});
+  A.txt(xmax*0.5,ymax*0.93,"drag the point along the curve",{cls:"anno"});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:80,
+    xlab:"coke",ylab:"bread",
+    aria:"Three indifference curves; curves further from the origin represent higher utility."});
+  B.axes(ticks(0,18,2),ticks(0,18,2));
+  [12,32,72].forEach((k,i)=>{
+    B.curve(t=>ic_y(t,k),{from:k/(ymax-0.2),to:xmax,cls:i===1?"c-a":"c-m",w:i===1?2.8:1.8,
+      label:"U = "+k,tcls:i===1?"t-a":"t-m",labelAt:i===2?xmax*0.62:xmax*0.82,ldy:-12});
+  });
+  B.seg(2.5,2.5,7.5,7.5,{cls:"c-k",w:1.6});
+  B.txt(7.5,7.5,"better",{cls:"big",dx:8,dy:-6,anchor:"start"});
+  [[2,16],[8,4]].forEach(p=>{
+    const mm=mrs(p[0],p[1]);
+    B.seg(Math.max(0,p[0]-2.6),p[1]+mm*2.6,p[0]+2.6,p[1]-mm*2.6,{cls:"c-k",w:1.2});
+    B.dot(p[0],p[1],{r:4.5,fill:"var(--azul)"});
+    B.txt(p[0],p[1],"MRS = "+fmt(mm,1),{cls:"anno",dx:p[0]<5?14:14,dy:p[0]<5?-14:-14,anchor:"start"});
+  });
+
+  return {
+    eyebrow:"Plate 4 · Optimal bundle",
+    h1:"Indifference curves and the MRS",
+    lead:`Every bundle on one curve gives the same utility. The slope of the curve at a point is what you would swap there — the marginal rate of substitution.`,
+    ctrls:`
+      <div class="ctrl" style="flex:1;min-width:260px"><label>Point on the curve <b>${fmt(x,1)} cans</b></label>
+        <input type="range" data-num="p4.x" min="${(IC_K/(ymax-0.6)).toFixed(2)}" max="${(xmax-0.6).toFixed(2)}" step="0.1" value="${x}"></div>`,
+    verdict:{c:"ok",s:`At (${fmt(x,1)}, ${fmt(y,1)}) the MRS is <b>${fmt(m,2)}</b>: you would give up ${fmt(m,2)} loaves for one more can and feel no different.`},
+    stats:[
+      ["Coke",fmt(x,1)],["Bread",fmt(y,1)],
+      ["MRS here",fmt(m,2)],["MRS at (2, 16)","8.00"],["MRS at (8, 4)","0.50"]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 4a — One curve, one tangent","Utility is constant along the blue curve. The black line is the tangent; the MRS is its slope, without the minus sign."),
+      fig(B.svg(),"Fig. 4b — Convexity, and higher is better","Curves further out are preferred. On any one of them the MRS falls as coke replaces bread: 8 at (2, 16), 0.5 at (8, 4).")
+    ],
+    text:`
+      <h2>What the number means</h2>
+      <p>MRS = ${fmt(m,2)} says: one more can is worth ${fmt(m,2)} loaves <b>to you</b>, at this bundle. It is a personal exchange rate, measured in goods, not euros.</p>
+      <div class="eq"><b>MRS = MU_coke / MU_bread</b><br><span class="g">how much you value a can, relative to a loaf</span></div>
+      <h2>Two properties we will use</h2>
+      <ul>
+        <li><b>Higher is better.</b> Curves further from the origin mean more of both goods, hence more utility. So the consumer wants to reach the outermost curve they can pay for.</li>
+        <li><b>Convexity: the MRS falls as you move right.</b> Awash with coke, another can buys little of your bread. Drag the point and watch the tangent flatten. This is diminishing marginal utility seen sideways, and it is why the answer will be a bit of both goods rather than Plate 2's corner.</li>
+      </ul>
+      <p class="note">Indifference curves of the same person never cross: a crossing point would have two different utility levels at once. Numbers like "U = 32" rank bundles and nothing more — doubling them would change no decision.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 5 — the budget constraint
+   ============================================================ */
+function plate5(){
+  const st=S.p5,{px,py,I,show}=st;
+  const xmax=20,ymax=12;
+  const base={px:2,py:4,I:32};
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"coke",ylab:"bread",
+    aria:"The budget constraint runs between the two intercepts; the shaded triangle is everything the consumer can afford."});
+  A.axes(ticks(0,20,4),ticks(0,12,2));
+  A.poly([[0,0],[I/px,0],[0,I/py]],{cls:"f-o"});
+  A.curve(t=>(I-px*t)/py,{from:0,to:I/px,cls:"c-o",w:2.8,label:"budget",tcls:"t-o",labelAt:I/px*0.66,ldy:-14});
+  A.dot(I/px,0,{r:4.5,fill:"var(--orange)"});
+  A.dot(0,I/py,{r:4.5,fill:"var(--orange)"});
+  A.txt(I/px,0,"I/P_coke = "+fmt(I/px,0),{cls:"anno",dy:-13});
+  A.txt(0,I/py,"I/P_bread = "+fmt(I/py,0),{cls:"anno",dx:11,dy:-11,anchor:"start"});
+  A.txt(I/px*0.26,I/py*0.28,"affordable",{cls:"anno"});
+  const sx=I/px*0.5, sy=(I-px*sx)/py;
+  A.seg(sx,sy,sx+2,sy,{cls:"c-k",w:1.6});
+  A.seg(sx+2,sy,sx+2,sy-2*px/py,{cls:"c-k",w:1.6});
+  A.txt(sx+1,sy,"+2 cans",{cls:"anno",dy:-8});
+  A.txt(sx+2,sy-px/py,"−"+fmt(2*px/py,1)+" loaves",{cls:"anno",dx:10,anchor:"start"});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"coke",ylab:"bread",
+    aria:"A cheaper coke pivots the budget constraint outwards along the coke axis; a higher income shifts the whole line out in parallel."});
+  B.axes(ticks(0,20,4),ticks(0,12,2));
+  B.curve(t=>(base.I-base.px*t)/base.py,{from:0,to:base.I/base.px,cls:"c-m",w:1.8,dash:"5 4"});
+  B.txt(base.I/base.px*0.5,(base.I-base.px*base.I/base.px*0.5)/base.py,"start",{cls:"anno",dy:-10});
+  if(show==="price"){
+    const p2=base.px/2;
+    B.curve(t=>(base.I-p2*t)/base.py,{from:0,to:base.I/p2,cls:"c-o",w:2.8});
+    B.txt(base.I/p2*0.62,(base.I-p2*base.I/p2*0.62)/base.py,"coke half price",{cls:"clab t-o",dy:-12});
+    B.txt(xmax*0.5,ymax*0.9,"pivots: the bread intercept cannot move",{cls:"anno"});
+  }else if(show==="income"){
+    const I2=base.I*1.5;
+    B.curve(t=>(I2-base.px*t)/base.py,{from:0,to:I2/base.px,cls:"c-o",w:2.8});
+    B.txt(I2/base.px*0.5,(I2-base.px*I2/base.px*0.5)/base.py,"+50% income",{cls:"clab t-o",dy:-12});
+    B.txt(xmax*0.5,ymax*0.9,"shifts out, slope unchanged",{cls:"anno"});
+  }else{
+    B.curve(t=>(base.I-base.px*t)/base.py,{from:0,to:base.I/base.px,cls:"c-o",w:2.8});
+    B.txt(xmax*0.5,ymax*0.9,"pick a change",{cls:"anno"});
+  }
+
+  return {
+    eyebrow:"Plate 5 · Optimal bundle",
+    h1:"The budget constraint",
+    lead:`Plate 4 says which bundles you like. This says which ones you can pay for.`,
+    ctrls:`
+      <div class="ctrl"><label>Price of coke <b>${eur(px,2)}</b></label>
+        <input type="range" data-num="p5.px" min="1" max="6" step="0.5" value="${px}"></div>
+      <div class="ctrl"><label>Price of bread <b>${eur(py,2)}</b></label>
+        <input type="range" data-num="p5.py" min="2" max="8" step="0.5" value="${py}"></div>
+      <div class="ctrl"><label>Income <b>${eur(I,0)}</b></label>
+        <input type="range" data-num="p5.I" min="16" max="56" step="4" value="${I}"></div>
+      <div class="ctrl" style="min-width:auto"><label>Panel (b)</label>
+        <div class="seg">
+          <button type="button" data-seg="p5.show" data-val="base" aria-pressed="${show==="base"}">Start</button>
+          <button type="button" data-seg="p5.show" data-val="price" aria-pressed="${show==="price"}">Price falls</button>
+          <button type="button" data-seg="p5.show" data-val="income" aria-pressed="${show==="income"}">Income rises</button>
+        </div></div>`,
+    stats:[
+      ["All coke",fmt(I/px,1)+" cans"],["All bread",fmt(I/py,1)+" loaves"],
+      ["Slope","−"+fmt(px/py,2)],["1 can costs",fmt(px/py,2)+" loaves"]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 5a — Intercepts and slope","Spend everything on one good and you reach an intercept. The slope is the exchange rate between the goods."),
+      fig(B.svg(),"Fig. 5b — Pivot or shift","A price change swings one end of the line. An income change moves the whole line and keeps its slope.")
+    ],
+    text:`
+      <div class="eq"><b>P_coke · coke + P_bread · bread = I</b><br>${eur(px,2)} · coke + ${eur(py,2)} · bread = ${eur(I,0)}</div>
+      <h2>The slope is an opportunity cost</h2>
+      <p>−P<sub>coke</sub>/P<sub>bread</sub> = −${fmt(px/py,2)} is not measured in euros. It says one more can means <b>${fmt(px/py,2)} fewer loaves</b>.</p>
+      <p>Only the ratio matters. Double both prices and the line does not tilt — it slides inwards, exactly like a cut in income. A 2% pay rise with 2% inflation leaves it where it was.</p>
+      <h2>Two different moves</h2>
+      <ul>
+        <li><b>A price change pivots it.</b> Cheaper coke lets you go further along the coke axis; the bread intercept cannot move, since making coke cheaper never buys more bread.</li>
+        <li><b>An income change shifts it.</b> Same prices, same trade-off, so the line moves out parallel to itself.</li>
+      </ul>
+      <p class="note">The shaded triangle is the whole feasible set, wasteful bundles included. Since more is better, the choice always lands <b>on</b> the line, never inside it.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 6 — utility maximization, dragging along the curve
+   ============================================================ */
+function plate6(){
+  const st=S.p6,{px,py,I}=st;
+  const xmax=20,ymax=12;
+  const ratio=px/py;
+  const xstar=I/(2*px), ystar=I/(2*py), kstar=xstar*ystar;   // tangency
+  const kmin=Math.max(1,kstar*0.14), kmax=kstar*1.85;
+  const k=Math.min(Math.max(st.k,kmin),kmax);
+  st.k=k;
+
+  // where this curve meets the budget line:  px·x² − I·x + k·py = 0
+  const disc = I*I - 4*px*py*k;
+  const near = Math.abs(k-kstar)/kstar < 0.02;
+  const x1 = disc>0 ? (I-Math.sqrt(disc))/(2*px) : null;
+  const x2 = disc>0 ? (I+Math.sqrt(disc))/(2*px) : null;
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"coke",ylab:"bread",drag2:"p6.k",dfun:"xy",dmin:kmin,dmax:kmax,
+    aria:"A fixed budget constraint with an indifference curve that can be moved in and out; the optimum is the position where the curve just touches the line."});
+  A.axes(ticks(0,20,4),ticks(0,12,2));
+  A.poly([[0,0],[I/px,0],[0,I/py]],{cls:"f-o"});
+  A.curve(t=>(I-px*t)/py,{from:0,to:I/px,cls:"c-o",w:2.8,label:"budget",tcls:"t-o",labelAt:I/px*0.22,ldy:-12,lanchor:"middle"});
+  A.curve(t=>ic_y(t,k),{from:k/(ymax-0.2),to:xmax,cls:"c-a",w:2.8,label:"U = "+fmt(k,0),tcls:"t-a",labelAt:xmax*0.78,ldy:-14});
+  if(near){
+    const m=mrs(xstar,ystar);
+    A.seg(Math.max(0,xstar-4),ystar+m*4,xstar+4,ystar-m*4,{cls:"c-k",w:1.6});
+    A.dot(xstar,ystar,{r:7,fill:"var(--ink)"});
+    A.txt(xstar,ystar,"tangent: ("+fmt(xstar,0)+", "+fmt(ystar,0)+")",{cls:"big",dx:14,dy:-14,anchor:"start"});
+  }else if(disc>0){
+    [x1,x2].forEach(xx=>{
+      const yy=(I-px*xx)/py;
+      A.dot(xx,yy,{r:5.5,fill:"var(--azul)"});
+    });
+    A.txt((x1+x2)/2,(I-px*(x1+x2)/2)/py,"cuts the line twice",{cls:"anno",dy:-12});
+  }else{
+    A.txt(xmax*0.52,ymax*0.88,"no bundle on this curve is affordable",{cls:"anno"});
+  }
+  A.txt(xmax*0.5,ymax*0.97,"drag the curve in or out",{cls:"anno"});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"coke",ylab:"bread",
+    aria:"The solution: at the tangency the indifference curve and the budget constraint have the same slope, giving the optimal quantities on the axes."});
+  B.axes(ticks(0,20,4),ticks(0,12,2));
+  B.curve(t=>ic_y(t,kstar),{from:kstar/(ymax-0.2),to:xmax,cls:"c-a",w:2.8,label:"U* = "+fmt(kstar,0),tcls:"t-a",labelAt:xmax*0.78,ldy:-14});
+  B.curve(t=>(I-px*t)/py,{from:0,to:I/px,cls:"c-o",w:2.8,label:"budget",tcls:"t-o",labelAt:I/px*0.22,ldy:-12,lanchor:"middle"});
+  B.dot(xstar,ystar,{r:7,fill:"var(--ink)"});
+  B.seg(xstar,0,xstar,ystar,{cls:"guide"});
+  B.seg(0,ystar,xstar,ystar,{cls:"guide"});
+  B.txt(xstar,0,"x* = "+fmt(xstar,1),{cls:"tick",dy:26});
+  B.txt(0,ystar,"y* = "+fmt(ystar,1),{cls:"tick",dx:6,dy:-9,anchor:"start"});
+  B.txt(xstar,ystar,"MRS = P_coke/P_bread = "+fmt(ratio,2),{cls:"anno",dx:14,dy:-14,anchor:"start"});
+
+  const verdict = near
+    ? {c:"ok",s:`Tangent. The curve touches the budget line at one point and lies outside it everywhere else: <b>the optimal bundle is ${fmt(xstar,1)} cans and ${fmt(ystar,1)} loaves</b>, with MRS = ${fmt(ratio,2)} = P_coke/P_bread.`}
+    : (disc>0
+      ? {c:"no",s:`This curve <b>cuts</b> the budget line, at ${fmt(x1,1)} and ${fmt(x2,1)} cans. Both are affordable, so you are not done — <b>push the curve further out</b>.`}
+      : {c:"no",s:`This curve lies entirely <b>beyond</b> the budget line. Nothing on it is affordable — <b>pull it back in</b>.`});
+
+  return {
+    eyebrow:"Plate 6 · Optimal bundle",
+    h1:"Utility maximization",
+    lead:`The budget constraint is fixed: it moves only when a price or your income changes. Drag the indifference curve in and out — or use the slider — until it just touches the line.`,
+    ctrls:`
+      <div class="ctrl"><label>Indifference curve <b>U = ${fmt(k,0)}</b></label>
+        <input type="range" data-num="p6.k" min="${kmin.toFixed(1)}" max="${kmax.toFixed(1)}" step="0.5" value="${k}"></div>
+      <button class="act" type="button" data-act="p6snap">Snap to the tangency</button>
+      <div class="ctrl"><label>Price of coke <b>${eur(px,2)}</b></label>
+        <input type="range" data-num="p6.px" min="1" max="5" step="0.5" value="${px}"></div>
+      <div class="ctrl"><label>Price of bread <b>${eur(py,2)}</b></label>
+        <input type="range" data-num="p6.py" min="2" max="8" step="0.5" value="${py}"></div>
+      <div class="ctrl"><label>Income <b>${eur(I,0)}</b></label>
+        <input type="range" data-num="p6.I" min="16" max="56" step="4" value="${I}"></div>`,
+    verdict,
+    stats:[
+      ["This curve","U = "+fmt(k,0)],["Highest reachable","U* = "+fmt(kstar,0)],
+      ["Price ratio",fmt(ratio,2)],
+      ["x*",fmt(xstar,2)],["y*",fmt(ystar,2)],
+      ["Spent at the optimum",eur(px*xstar+py*ystar,2)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 6a — Move the curve, not the line","Two crossings mean you can afford better. No crossing means you cannot afford it. One touch is the answer."),
+      fig(B.svg(),"Fig. 6b — The solution","At the tangency the two slopes agree. Drop the point to the axes to read off the optimal quantities.")
+    ],
+    text:`
+      <p>Three things can happen as the curve moves, and only one of them is an answer:</p>
+      <ul>
+        <li><b>It cuts the line twice.</b> Those bundles are affordable, so you are still inside your means — a higher curve is within reach.</li>
+        <li><b>It misses the line.</b> Every bundle on it costs more than ${eur(I,0)}.</li>
+        <li><b>It touches once.</b> The highest curve you can reach. That single point of contact is the optimal bundle.</li>
+      </ul>
+      <h2>Why touching means equal slopes</h2>
+      <p>Touching without crossing is exactly what equal slopes mean. So at the optimum:</p>
+      <div class="eq"><b>MRS = P_coke / P_bread</b><br><span class="g">your trade-off  =  the market's trade-off</span></div>
+      <p>If they differed, the curve would cross the line and part of it would lie inside your budget — so you could reach something better.</p>
+      <h2>The same rule as Plate 3</h2>
+      <p>Write the MRS as a ratio of marginal utilities and rearrange:</p>
+      <div class="eq">MU_coke / MU_bread = P_coke / P_bread<br><b>MU_coke / P_coke = MU_bread / P_bread</b><br><span class="g">equimarginal principle, again</span></div>
+      <p>The tangency and the last euro are one condition in two costumes.</p>
+      <h2>Solving it</h2>
+      <div class="eq">MRS = ${fmt(ratio,2)} &nbsp;and&nbsp; ${eur(px,2)}·x + ${eur(py,2)}·y = ${eur(I,0)}<br><b>x* = ${fmt(xstar,1)} cans, y* = ${fmt(ystar,1)} loaves</b></div>
+      <p class="note">Change a price and watch the budget line pivot: the tangency moves, and so does the highest curve you can reach. Tracking that is Plate 8.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 7 — perfect substitutes
+   ============================================================ */
+function plate7(){
+  const st=S.p7,{px,py,I}=st,{ax,ay}=SUB;
+  const xmax=14,ymax=14;
+  const bx=ax/px, by=ay/py;          // utils per euro
+  const m=ax/ay, ratio=px/py;        // MRS (constant) and the price ratio
+  const allX=I/px, allY=I/py;        // the two corners of the budget line
+  const uX=ax*allX, uY=ay*allY;      // utils at each corner
+  const kbest=Math.max(uX,uY);       // highest affordable indifference line
+  const cornerX=uX>uY;
+  const tie=Math.abs(bx-by)<1e-9;
+  const kmin=Math.max(1,kbest*0.3), kmax=kbest*1.5;
+  const k=Math.min(Math.max(st.k,kmin),kmax);
+  st.k=k;
+  const near=Math.abs(k-kbest)/kbest<0.02;
+  const yOf=t=>(k-ax*t)/ay;
+  const pxTie=ax/ay*py;
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"Coke",ylab:"Pepsi",drag2:"p7.k",dfun:"lin",dmin:kmin,dmax:kmax,
+    aria:"A fixed budget constraint with straight indifference lines that can be moved outwards; the last one that still touches the budget line meets it at a corner."});
+  A.axes(ticks(0,14,2),ticks(0,14,2));
+  A.poly([[0,0],[allX,0],[0,allY]],{cls:"f-o"});
+  A.curve(t=>(I-px*t)/py,{from:0,to:allX,cls:"c-o",w:2.8,label:"budget",tcls:"t-o",labelAt:allX*0.22,ldy:-12,lanchor:"middle"});
+  A.curve(t=>yOf(t),{from:0,to:k/ax,cls:"c-a",w:2.8,label:"U = "+fmt(k,1),tcls:"t-a",labelAt:(k/ax)*0.24,ldy:20,lanchor:"middle"});
+  if(near){
+    A.dot(cornerX?allX:0,cornerX?0:allY,{r:8,fill:"var(--ink)"});
+    A.txt(cornerX?allX:0,cornerX?0:allY,"all "+(cornerX?"Coke":"Pepsi"),
+      {cls:"big",dx:cornerX?-12:14,dy:cornerX?-16:-14,anchor:cornerX?"end":"start"});
+    A.txt(xmax*0.5,ymax*0.88,"touches at a corner, not a tangency",{cls:"anno"});
+  }else if(k<kbest){
+    A.txt(xmax*0.5,ymax*0.88,"still inside the budget: push it out",{cls:"anno"});
+  }else{
+    A.txt(xmax*0.5,ymax*0.88,"beyond the budget: nothing affordable",{cls:"anno"});
+  }
+  A.txt(xmax*0.5,ymax*0.97,"drag the line in or out",{cls:"anno"});
+  A.txt(k/ax*0.62,yOf(k/ax*0.62),"slope −"+fmt(m,2),{cls:"anno",dy:20});
+  A.txt(allX*0.58,(I-px*allX*0.58)/py,"slope −"+fmt(ratio,2),{cls:"anno",dy:-12});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"Coke",ylab:"Pepsi",
+    aria:"The knife-edge case: when the price ratio equals the constant marginal rate of substitution the budget line lies on an indifference line and every affordable bundle is optimal."});
+  B.axes(ticks(0,14,2),ticks(0,14,2));
+  const xT=I/pxTie;
+  B.poly([[0,0],[xT,0],[0,I/py]],{cls:"f-o"});
+  B.curve(t=>(I-pxTie*t)/py,{from:0,to:xT,cls:"c-o",w:3.6});
+  B.curve(t=>(ax*xT-ax*t)/ay,{from:0,to:xT,cls:"c-a",w:1.8,dash:"7 5"});
+  B.dot(0,I/py,{r:5,fill:"var(--ink)"});
+  B.dot(xT,0,{r:5,fill:"var(--ink)"});
+  B.dot(xT*0.5,(I-pxTie*xT*0.5)/py,{r:5,fill:"var(--ink)"});
+  B.txt(xT*0.5,(I-pxTie*xT*0.5)/py,"every bundle here is optimal",{cls:"anno",dy:-13});
+  B.txt(xmax*0.5,ymax*0.9,"if P_Coke were "+eur(pxTie,2),{cls:"anno"});
+
+  const verdict = tie
+    ? {c:"ok",s:`Utils per euro are identical (${fmt(bx,3)} either way), so the budget line and the indifference lines are parallel. <b>Every affordable bundle is optimal</b> — panel (b).`}
+    : (near
+      ? {c:"ok",s:`This is as far out as the line goes. It touches the budget line at <b>one corner</b>: spend the whole ${eur(I,0)} on ${cornerX?"Coke":"Pepsi"} — ${fmt(cornerX?allX:allY,1)} cans, ${fmt(kbest,1)} utils. There is no tangency anywhere.`}
+      : (k<kbest
+        ? {c:"no",s:`Affordable, but not the best you can do: part of this line lies inside the budget. <b>Push it further out.</b>`}
+        : {c:"no",s:`The whole line is outside the budget. <b>Pull it back in</b> until it just touches.</b>`}));
+
+  return {
+    eyebrow:"Plate 7 · Optimal bundle",
+    h1:"Perfect substitutes",
+    lead:`Coke and Pepsi, and you do not care which you drink: a can of Coke is worth ${fmt(ax,1)} and a can of Pepsi ${fmt(ay,1)}, however many you have had. Same exercise as Plate 6 — fixed budget line, move the indifference line out — with a different ending.`,
+    ctrls:`
+      <div class="ctrl"><label>Indifference line <b>U = ${fmt(k,1)}</b></label>
+        <input type="range" data-num="p7.k" min="${kmin.toFixed(1)}" max="${kmax.toFixed(1)}" step="0.2" value="${k}"></div>
+      <button class="act" type="button" data-act="p7snap">Push it as far as it goes</button>
+      <div class="ctrl"><label>Price of Coke <b>${eur(px,2)}</b></label>
+        <input type="range" data-num="p7.px" min="0.6" max="2.4" step="0.05" value="${px}"></div>
+      <div class="ctrl"><label>Price of Pepsi <b>${eur(py,2)}</b></label>
+        <input type="range" data-num="p7.py" min="0.6" max="2.4" step="0.05" value="${py}"></div>
+      <div class="ctrl"><label>Budget <b>${eur(I,0)}</b></label>
+        <input type="range" data-num="p7.I" min="6" max="20" step="1" value="${I}"></div>`,
+    verdict,
+    stats:[
+      ["MRS (constant)",fmt(m,2)],["Price ratio",fmt(ratio,2)],
+      ["All Coke",fmt(allX,1)+" cans = "+fmt(uX,1)+" utils"],
+      ["All Pepsi",fmt(allY,1)+" cans = "+fmt(uY,1)+" utils"],
+      ["Best reachable","U = "+fmt(kbest,1)],["Tie at P Coke",eur(pxTie,2)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 7a — Push the line out","The indifference lines are parallel to each other but not to the budget line, so the last contact is one of the two corners."),
+      fig(B.svg(),"Fig. 7b — The knife-edge","Make the slopes equal and the highest affordable line lies on top of the budget line: the whole line is optimal.")
+    ],
+    text:`
+      <p>Do exactly what you did on Plate 6 and watch it fail. The indifference lines are straight, so they are <b>parallel to each other but never parallel to the budget line</b> — unless the prices are set just so. Pushing them out, the last one to touch the feasible triangle touches it at a corner.</p>
+      <div class="eq">indifference lines: slope −${fmt(m,2)} &nbsp;<span class="g">(= MRS, the same everywhere)</span><br>budget line: slope −${fmt(ratio,2)} &nbsp;<span class="g">(= P_Coke/P_Pepsi)</span></div>
+      <p>Because ${fmt(m,2)} ≠ ${fmt(ratio,2)}, there is no point where the slopes agree, so <b>the tangency condition has nothing to grab</b>. The constraint runs out before the swapping does.</p>
+      <h2>Which corner, and why</h2>
+      <div class="eq">Coke: ${fmt(ax,1)} ÷ ${eur(px,2)} = <b>${fmt(bx,3)}</b> utils per euro<br>Pepsi: ${fmt(ay,1)} ÷ ${eur(py,2)} = <b>${fmt(by,3)}</b> utils per euro</div>
+      <p>Whichever is bigger takes the whole budget — and nothing that happens as you buy more will change the comparison, because the marginal utilities never fall. Straight to the axis.</p>
+      <ul>
+        <li>Budget line <b>steeper</b> than the indifference lines → all of the good on the vertical axis.</li>
+        <li>Budget line <b>flatter</b> → all of the good on the horizontal axis.</li>
+      </ul>
+      <h2>This is Plate 2, drawn</h2>
+      <p>Fixed marginal utilities <b>are</b> this case. That is why coke and bread with frozen appetites gave an absurd all-in-one-good answer: the assumption had quietly turned dinner and a drink into Coke and Pepsi.</p>
+      <p>The knife-edge is worth a moment. At P<sub>Coke</sub> = ${eur(pxTie,2)} the slopes match, the highest affordable line sits on the budget line, and demand is no longer a single point. Real markets sit close to this, which is why a small price cut can move a lot of buyers at once.</p>
+      <p class="note">The mirror case is perfect complements — left and right shoes — where the curves are right angles and the optimum is the kink. The course covers it; I have not drawn it here.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 8 — the individual demand curve
+   ============================================================ */
+function plate8(){
+  const st=S.p8;
+  const py=4, I=32, px=st.px;
+  const xstar=I/(2*px), ystar=I/(2*py), k=xstar*ystar;
+  const xmax=20,ymax=12;
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:78,
+    xlab:"coke",ylab:"bread",
+    aria:"As the price of coke falls the budget constraint pivots out and the optimal bundle moves right along a path."});
+  A.axes(ticks(0,20,4),ticks(0,12,2));
+  [1.6,2,3,4].forEach(p=>{
+    A.curve(t=>(I-p*t)/py,{from:0,to:Math.min(xmax,I/p),cls:"c-m",w:1.2,dash:"4 4"});
+  });
+  A.curve(t=>ic_y(t,k),{from:k/(ymax-0.2),to:xmax,cls:"c-a",w:2.4,label:"U",tcls:"t-a",labelAt:xmax*0.8,ldy:-12});
+  A.curve(t=>(I-px*t)/py,{from:0,to:Math.min(xmax,I/px),cls:"c-o",w:2.8,label:"budget",tcls:"t-o",labelAt:Math.min(xmax,I/px)*0.62,ldy:16});
+  A.seg(0,ystar,xmax,ystar,{cls:"c-k",w:1.4,dash:"6 3"});
+  A.txt(xmax*0.82,ystar,"optimal bundles",{cls:"anno",dy:-9,anchor:"end"});
+  st.trace.forEach(t=>A.dot(t.x,ystar,{r:2.6,fill:"var(--ink-3)"}));
+  A.seg(xstar,0,xstar,ystar,{cls:"guide"});
+  A.dot(xstar,ystar,{r:6,fill:"var(--ink)",label:fmt(xstar,1)+" cans",ldx:11,ldy:-11});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:7,padR:78,
+    xlab:"coke",ylab:"P_coke",
+    aria:"The optimal quantity of coke plotted against its price: the individual demand curve."});
+  B.axes(ticks(0,20,4),ticks(0,6,1));
+  B.curve(q=>q<=0?NaN:I/(2*q),{from:2.6,to:xmax,cls:"c-a",w:2.8,label:"demand",tcls:"t-a",labelAt:11,ldy:-14});
+  st.trace.forEach(t=>B.dot(t.x,t.p,{r:2.6,fill:"var(--ink-3)"}));
+  B.seg(0,px,xstar,px,{cls:"guide"});
+  B.seg(xstar,0,xstar,px,{cls:"guide"});
+  B.dot(xstar,px,{r:6,fill:"var(--ink)",label:"("+fmt(xstar,1)+", "+eur(px,2)+")",ldx:11,ldy:-11});
+
+  return {
+    eyebrow:"Plate 8 · Demand",
+    h1:"The individual demand curve",
+    lead:`Hold bread at ${eur(py,2)} and income at ${eur(I,0)}, then solve the same tangency at one price of coke after another. Collect the answers.`,
+    ctrls:`
+      <div class="ctrl" style="flex:1;min-width:220px"><label>Price of coke <b>${eur(px,2)}</b></label>
+        <input type="range" data-num="p8.px" min="0.8" max="6" step="0.1" value="${px}"></div>
+      <button class="act" type="button" data-act="p8sweep">Sweep the price</button>
+      <button class="act" type="button" data-act="p8clear">Clear</button>`,
+    stats:[
+      ["Price of coke",eur(px,2)],["Coke bought",fmt(xstar,2)],["Bread bought",fmt(ystar,2)],
+      ["Spent on coke",eur(px*xstar,2)],["Spent on bread",eur(py*ystar,2)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 8a — The bundle at every price","Faint lines are budget constraints at other coke prices. The optimal bundle slides right as coke gets cheaper."),
+      fig(B.svg(),"Fig. 8b — The same answers, replotted","Price on the vertical axis, optimal quantity on the horizontal. This is the demand curve — derived, not assumed.")
+    ],
+    text:`
+      <div class="eq">optimal coke = <b>x*(P_coke, P_bread, I)</b><br>at P<sub>coke</sub> = ${eur(px,2)}: x* = ${fmt(xstar,2)} cans</div>
+      <p>The demand curve is not an extra assumption about behaviour. It is the utility-maximizing choice, re-solved at every price and plotted the other way round.</p>
+      <h2>Why it slopes down</h2>
+      <ul>
+        <li><b>Substitution.</b> Cheaper coke lowers the price ratio, so at the old bundle your MRS now exceeds it and you swap towards coke.</li>
+        <li><b>Income.</b> Cheaper coke also leaves you better off in real terms — the line pivots outwards — and part of that goes on coke too.</li>
+      </ul>
+      <h2>Three arguments, three curves</h2>
+      <ul>
+        <li>Move P<sub>coke</sub> → the <b>demand curve</b>.</li>
+        <li>Move income → the <b>Engel curve</b>.</li>
+        <li>Move P<sub>bread</sub> → substitutes or complements.</li>
+      </ul>
+      <p>The curve is drawn <b>holding</b> P<sub>bread</sub> and income fixed. A change in the price of coke slides you along it; anything else shifts the whole curve.</p>
+      <p class="note">With this utility function bread stays at ${fmt(ystar,1)} loaves whatever coke costs — you always spend half your income on each good, which is why the path in panel (a) is flat. That is a property of this convenient example, not of consumers in general.</p>`
+  };
+}
+
+/* ============================================================
+   Plate 9 — marginal utility and willingness to pay.
+   Marginal utility of coke is linear and falling, MU(x) = 50 − 5x,
+   and the marginal utility of income is lambda.  The demand curve is
+   then literally MU(x)/lambda, so with lambda = 5 it is P = 10 − x.
+   ============================================================ */
+const MUX = {m0:50, slope:5};                    // MU(x) = 50 − 5x
+const mu_x = x => MUX.m0 - MUX.slope*x;          // utils per extra can
+const U_of = q => MUX.m0*q - MUX.slope*q*q/2;    // total utils from q cans
+
+function plate9(){
+  const st=S.p9;
+  const lam=st.lam;                              // marginal utility of income
+  const p=st.p;
+  const wtp = x => mu_x(x)/lam;                  // inverse demand, in euros
+  const pmax = wtp(0);
+  const q=Math.max(0,(MUX.m0-lam*p)/MUX.slope);  // wtp(q) = p
+  const cs=0.5*(pmax-p)*q;
+  const totalWTP=U_of(q)/lam;
+  const xmax=12, ymax=Math.max(12,pmax*1.12);
+
+  const A=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:86,
+    xlab:"coke",ylab:"€ per can",
+    aria:"A demand curve whose height at each quantity is the marginal utility of that unit divided by the marginal utility of income, labelled in both utils and euros."});
+  A.axes(ticks(0,12,2),autoTicks(0,ymax*0.96,5));
+  A.curve(t=>wtp(t),{from:0,to:MUX.m0/MUX.slope,cls:"c-a",w:2.8,label:"demand = MU/λ",tcls:"t-a",labelAt:(MUX.m0/MUX.slope)*0.97,ldy:-14,lanchor:"end"});
+  [2,5,8].forEach(qq=>{
+    if(qq>MUX.m0/MUX.slope) return;
+    const w=wtp(qq);
+    A.seg(qq,0,qq,w,{cls:"c-k",w:1.4});
+    A.dot(qq,w,{r:4,fill:"var(--azul)"});
+    A.txt(qq,w,fmt(mu_x(qq),0)+" utils",{cls:"anno",dx:11,dy:-6,anchor:"start"});
+    A.txt(qq,w,"÷ λ = "+eur(w,2),{cls:"big",dx:11,dy:12,anchor:"start"});
+  });
+  A.txt(xmax*0.5,ymax*0.95,"height = MU of that can, converted into euros",{cls:"anno"});
+
+  const B=Plot({w:560,h:440,x0:0,x1:xmax,y0:0,y1:ymax,padR:86,
+    xlab:"coke",ylab:"€ per can",
+    aria:"The same demand curve with a price line: the area between them up to the quantity bought is consumer surplus."});
+  B.axes(ticks(0,12,2),autoTicks(0,ymax*0.96,5));
+  if(q>0) B.poly([[0,p],[q,p],[0,pmax]],{cls:"f-a"});
+  B.curve(t=>wtp(t),{from:0,to:MUX.m0/MUX.slope,cls:"c-a",w:2.8,label:"demand",tcls:"t-a",labelAt:(MUX.m0/MUX.slope)*0.2,ldy:-13,lanchor:"middle"});
+  B.seg(0,p,xmax,p,{cls:"c-o",w:2.6});
+  B.txt(xmax*0.94,p,"price "+eur(p,2),{cls:"clab t-o",dy:-10,anchor:"end"});
+  if(q>0){
+    B.seg(q,0,q,p,{cls:"guide"});
+    B.dot(q,p,{r:6,fill:"var(--ink)"});
+    B.txt(q,0,"buy "+fmt(q,1),{cls:"tick",dy:26});
+    B.txt(q*0.32,(p+pmax)/2,"CS = "+eur(cs,2),{cls:"big"});
+    B.txt(q*0.32,(p+pmax)/2,"= U(q)/λ − p·q",{cls:"anno",dy:18});
+  }
+
+  const rows=[2,5,8].filter(qq=>qq<=MUX.m0/MUX.slope).map(qq=>`<tr>
+      <td>can ${qq}</td><td>${fmt(mu_x(qq),0)}</td><td>${fmt(lam,1)}</td>
+      <td>${eur(mu_x(qq)/lam,2)}</td><td>${mu_x(qq)/lam>=p?"buy":"no"}</td></tr>`).join("");
+
+  return {
+    eyebrow:"Plate 9 · Demand",
+    h1:"Marginal utility and willingness to pay",
+    lead:`The height of the demand curve is not a new idea — it is marginal utility with the units changed. One line of algebra from Plate 3 turns utils into euros.`,
+    ctrls:`
+      <div class="ctrl" style="min-width:230px"><label>Price of a can <b>${eur(p,2)}</b></label>
+        <input type="range" data-num="p9.p" min="0.5" max="${fmt(pmax*0.95,1)}" step="0.5" value="${p}"></div>
+      <div class="ctrl" style="min-width:230px"><label>Marginal utility of income <b>λ = ${fmt(lam,1)}</b></label>
+        <input type="range" data-num="p9.lam" min="2" max="10" step="0.5" value="${lam}"></div>`,
+    verdict:{c:"ok",s:`The ${fmt(q,1)}th can gives ${fmt(mu_x(q),1)} utils, which at λ = ${fmt(lam,1)} utils per euro is worth exactly ${eur(p,2)} — the price. <b>That is why you stop there.</b>`},
+    panel:`<div class="tw"><table>
+      <thead><tr><th></th><th>MU (utils)</th><th>λ (utils per €)</th><th>MU/λ (€)</th><th>At ${eur(p,2)}</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`,
+    stats:[
+      ["Price",eur(p,2)],["Cans bought",fmt(q,1)],
+      ["MU of the last can",fmt(mu_x(q),1)+" utils"],
+      ["Total utils",fmt(U_of(q),0)],
+      ["Total WTP = U/λ",eur(totalWTP,2)],
+      ["Paid",eur(p*q,2)],["Consumer surplus",eur(cs,2)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 9a — The same curve in two units","Each vertical segment is the marginal utility of that can, divided by λ. Utils above, euros below."),
+      fig(B.svg(),"Fig. 9b — Consumer surplus","Total willingness to pay is the whole area under the curve, U(q)/λ. Subtract what you actually paid and the shaded triangle is left.")
+    ],
+    text:`
+      <h2>The one line that does it</h2>
+      <p>Plate 3 ended with the equimarginal condition. Give the common value a name — λ, the marginal utility of income, the utils an extra euro buys — and rearrange:</p>
+      <div class="eq">MU_coke / P_coke = MU_bread / P_bread = <b>λ</b><br>
+      ⟹ &nbsp; <b>P_coke = MU_coke / λ</b></div>
+      <p>Read the second line as a statement about willingness to pay. The most you would hand over for one more can is its marginal utility, <b>divided by the marginal utility of money</b>. Utils go in, euros come out, and λ is the exchange rate.</p>
+      <h2>So the demand curve is marginal utility in disguise</h2>
+      <p>With MU falling in x, this <em>is</em> the inverse demand function:</p>
+      <div class="eq">MU(x) = ${fmt(MUX.m0,0)} − ${fmt(MUX.slope,0)}x &nbsp;<span class="g">utils per can</span><br>
+      P(x) = MU(x)/λ = (${fmt(MUX.m0,0)} − ${fmt(MUX.slope,0)}x) / ${fmt(lam,1)} = <b>${fmt(pmax,1)} − ${fmt(MUX.slope/lam,2)}x</b></div>
+      <p>And the slope of demand now has a cause rather than an assumption behind it:</p>
+      <div class="eq">x ↑ &nbsp;⟹&nbsp; MU(x) ↓ &nbsp;⟹&nbsp; P = MU/λ ↓<br><span class="g">diminishing marginal utility  ⟹  demand slopes down</span></div>
+      <p>The price you are willing to pay falls for exactly one reason: the next can is worth less to you than the last.</p>
+      <h2>Areas, not just heights</h2>
+      <p>Add up the heights and you get total willingness to pay, which is total utility at the same exchange rate:</p>
+      <div class="eq">∫₀^q P(x) dx = (1/λ) ∫₀^q MU(x) dx = <b>U(q)/λ</b><br>
+      = ${fmt(U_of(q),0)} utils ÷ ${fmt(lam,1)} = ${eur(totalWTP,2)}</div>
+      <div class="eq">CS = U(q)/λ − p·q = ${eur(totalWTP,2)} − ${eur(p*q,2)} = <b>${eur(cs,2)}</b><br>
+      <span class="g">and the triangle ½·(${eur(pmax,2)} − ${eur(p,2)})·${fmt(q,1)} gives the same number</span></div>
+      <p>So consumer surplus is total utility converted into euros, minus the money spent. The area under a demand curve was never a geometric coincidence.</p>
+      <h2>What λ does</h2>
+      <p>Move the λ slider. The marginal utilities do not change — the same can still gives the same utils — but the whole demand curve moves, because money itself is worth more or less at the margin:</p>
+      <ul>
+        <li><b>Low λ</b> (an extra euro buys few utils, so money is loose): each can converts into <em>more</em> euros. Demand shifts up.</li>
+        <li><b>High λ</b> (money is tight): the same utils convert into fewer euros. Demand shifts down.</li>
+      </ul>
+      <p>That is how income gets into demand without touching preferences at all, and it closes the loop with the producer side: there the demand curve was the starting point and welfare was the area under it. Both are now results.</p>
+      <p class="note"><b>Two things flagged.</b> λ is treated as a constant here, which is right at the optimum and for small changes; strictly it moves with income and prices, and an intermediate course pins it down with the indirect utility function. And marginal utility is drawn linear so the demand curve is a straight line and the surplus a clean triangle — nothing in the argument depends on that.</p>`
+  };
+}
+
+const BUILDERS={1:plate1,2:plate2,3:plate3,4:plate4,5:plate5,6:plate6,7:plate7,8:plate8,9:plate9};
+
+/* ============================================================
+   Shell
+   ============================================================ */
+const stage=document.getElementById("stage");
+const railEl=document.getElementById("rail");
+
+function buildRail(){
+  let html="",last="";
+  PLATES.forEach(p=>{
+    if(p.g!==last){html+=`<li class="group">${p.g}</li>`;last=p.g;}
+    html+=`<li><button type="button" data-goto="${p.n}" aria-current="${p.n===S.step}"><i>${p.n}</i><span>${p.t}</span></button></li>`;
+  });
+  railEl.innerHTML=html;
+}
+const headHTML = d => `<p class="eyebrow">${d.eyebrow}</p><h1>${d.h1}</h1><div class="rule"></div><p class="lead">${d.lead}</p>`;
+const statsHTML = d => (d.stats||[]).map(s=>`<div class="stat"><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join("");
+const midHTML = d => (d.verdict?`<div class="verdict ${d.verdict.c}">${d.verdict.s}</div>`:"")+(d.panel||"");
+
+function render(){
+  const d=BUILDERS[S.step]();
+  stage.innerHTML=mh(`
+    <section class="step">
+      <header class="phead" id="pheadBox">${headHTML(d)}</header>
+      <div class="ctrls" id="ctrlBox">${d.ctrls||""}</div>
+      <div id="midBox">${midHTML(d)}</div>
+      ${d.stats?`<dl class="stats" id="statsBox">${statsHTML(d)}</dl>`:`<dl class="stats" id="statsBox" hidden></dl>`}
+      ${d.figs?`<div class="figs" id="figsBox">${d.figs.join("")}</div>`:`<div id="figsBox"></div>`}
+      <div class="prose" id="proseBox">${d.text}</div>
+    </section>`);
+  document.getElementById("cnt").textContent="Plate "+S.step+" of "+PLATES.length;
+  railEl.querySelectorAll("[data-goto]").forEach(b=>b.setAttribute("aria-current",String(+b.dataset.goto===S.step)));
+  document.getElementById("prev").disabled=S.step===1;
+  document.getElementById("next").disabled=S.step===PLATES.length;
+}
+function refresh(){
+  const box=document.getElementById("ctrlBox");
+  if(!box){render();return;}
+  const d=BUILDERS[S.step]();
+  document.getElementById("pheadBox").innerHTML=mh(headHTML(d));
+  document.getElementById("proseBox").innerHTML=mh(d.text);
+  document.getElementById("midBox").innerHTML=mh(midHTML(d));
+  const sb=document.getElementById("statsBox");
+  sb.innerHTML=mh(statsHTML(d)); sb.hidden=!d.stats;
+  const fb=document.getElementById("figsBox");
+  fb.className=d.figs?"figs":"";
+  fb.innerHTML=d.figs?d.figs.join(""):"";
+  const tmp=document.createElement("div");
+  tmp.innerHTML=d.ctrls||"";
+  const fresh=tmp.querySelectorAll(".ctrl label b"),live=box.querySelectorAll(".ctrl label b");
+  fresh.forEach((n,i)=>{if(live[i])live[i].textContent=n.textContent;});
+  box.querySelectorAll("[data-num]").forEach(el=>{
+    if(el!==document.activeElement){
+      const v=getPath(el.dataset.num);
+      if(Number.isFinite(v))el.value=v;
+    }
+  });
+  const bt=tmp.querySelectorAll("[data-buy]"),lb=box.querySelectorAll("[data-buy]");
+  bt.forEach((n,i)=>{if(lb[i])lb[i].disabled=n.disabled;});
+}
+function setPath(p,v){const[g,k]=p.split(".");S[g][k]=v;}
+function getPath(p){const[g,k]=p.split(".");return S[g][k];}
+
+document.addEventListener("input",ev=>{
+  const t=ev.target;
+  if(t.dataset&&t.dataset.num!==undefined){
+    setPath(t.dataset.num,parseFloat(t.value));
+    if(t.dataset.num.startsWith("p3.")){S.p3.msg=null;clampP3();}
+    refresh();
+  }
+});
+document.addEventListener("change",ev=>{
+  const t=ev.target;
+  if(t.dataset&&t.dataset.bool!==undefined){setPath(t.dataset.bool,t.checked);refresh();}
+});
+function clampP3(){
+  let guard=0;
+  while(guard++<60){
+    const {spent}=p3state();
+    if(spent<=S.p3.I+1e-9)break;
+    const g=GOODS.slice().sort((a,b)=>S.p3.bought[b]-S.p3.bought[a]).find(gg=>S.p3.bought[gg]>0);
+    if(!g)break;
+    S.p3.bought[g]--;
+  }
+}
+document.addEventListener("click",ev=>{
+  const b=ev.target.closest("button");
+  if(!b)return;
+  if(b.dataset.goto){stopAnim();S.step=+b.dataset.goto;render();window.scrollTo({top:0,behavior:"smooth"});return;}
+  if(b.id==="prev"){stopAnim();S.step=Math.max(1,S.step-1);render();window.scrollTo({top:0});return;}
+  if(b.id==="next"){stopAnim();S.step=Math.min(PLATES.length,S.step+1);render();window.scrollTo({top:0});return;}
+  if(b.dataset.seg){const v=b.dataset.val;setPath(b.dataset.seg,isNaN(+v)?v:+v);render();return;}
+  if(b.dataset.buy){buy(b.dataset.buy);return;}
+  if(b.dataset.act==="p3auto"){autoSpend();return;}
+  if(b.dataset.act==="p3reset"){S.p3.bought={coke:0,bread:0,coffee:0};S.p3.msg=null;refresh();return;}
+  if(b.dataset.act==="p6snap"){S.p6.k=(S.p6.I*S.p6.I)/(4*S.p6.px*S.p6.py);refresh();return;}
+  if(b.dataset.act==="p7snap"){S.p7.k=Math.max(SUB.ax*S.p7.I/S.p7.px,SUB.ay*S.p7.I/S.p7.py);refresh();return;}
+  if(b.dataset.act==="p8sweep"){sweepPrice();return;}
+  if(b.dataset.act==="p8clear"){S.p8.trace=[];refresh();return;}
+  if(b.id==="theme"){toggleTheme();return;}
+  if(b.id==="railToggle"){toggleRail();return;}
+});
+document.addEventListener("keydown",ev=>{
+  if(ev.target.matches("input,button"))return;
+  if(ev.key==="ArrowRight"&&S.step<PLATES.length){S.step++;render();}
+  if(ev.key==="ArrowLeft"&&S.step>1){S.step--;render();}
+});
+
+function buy(g){
+  const {left,best,bestv}=p3state();
+  const n=S.p3.bought[g];
+  if(n>=MU[g].mu.length){S.p3.msg=`No ${MU[g].plural} left in the table.`;S.p3.ok=false;refresh();return;}
+  const v=MU[g].mu[n]/p3price(g);
+  if(p3price(g)>left+1e-9){S.p3.msg=`A ${MU[g].unit} costs ${eur(p3price(g),2)} and you have ${eur(left,2)} left.`;S.p3.ok=false;refresh();return;}
+  if(g!==best){
+    S.p3.msg=`Not the best buy. ${MU[g].name} gives ${fmt(v,2)} utils per euro, ${MU[best].name} gives ${fmt(bestv,2)}.`;
+    S.p3.ok=false;refresh();return;
+  }
+  S.p3.bought[g]++;
+  const after=p3state();
+  S.p3.msg=`Correct — ${MU[g].name.toLowerCase()} at ${fmt(v,2)} utils per euro was the best on offer.`+
+    (after.best===null?" And the budget is gone.":` ${eur(after.left,2)} left.`);
+  S.p3.ok=true;refresh();
+}
+function autoSpend(){
+  let guard=0;
+  while(guard++<60){
+    const {best}=p3state();
+    if(best===null)break;
+    S.p3.bought[best]++;
+  }
+  S.p3.msg=null;refresh();
+}
+
+let raf=null;
+function stopAnim(){if(raf){cancelAnimationFrame(raf);raf=null;}}
+function sweepPrice(){
+  stopAnim();
+  S.p8.trace=[];
+  let p=6;
+  const tick=()=>{
+    p-=0.11;
+    S.p8.px=Math.max(0.8,+p.toFixed(2));
+    S.p8.trace.push({p:S.p8.px,x:32/(2*S.p8.px)});
+    refresh();
+    if(p>0.9)raf=requestAnimationFrame(tick);else raf=null;
+  };
+  raf=requestAnimationFrame(tick);
+}
+
+/* dragging a point in a figure */
+let dragCtx=null;
+function beginDrag(ev){
+  const svg=ev.target.closest?ev.target.closest("svg[data-drag],svg[data-drag2]"):null;
+  if(!svg)return;
+  const r=svg.getBoundingClientRect();
+  dragCtx={mode:svg.dataset.drag2?2:1,
+           path:svg.dataset.drag2||svg.dataset.drag,
+           dfun:svg.dataset.dfun,
+           rect:r,W:+svg.dataset.w,padL:+svg.dataset.padl,padT:+svg.dataset.padt,
+           iw:+svg.dataset.iw,ih:+svg.dataset.ih,
+           x0:+svg.dataset.x0,x1:+svg.dataset.x1,y0:+svg.dataset.y0,y1:+svg.dataset.y1,
+           dmin:+svg.dataset.dmin,dmax:+svg.dataset.dmax};
+  ev.preventDefault();
+  moveDrag(ev.clientX,ev.clientY);
+}
+function moveDrag(clientX,clientY){
+  const c=dragCtx;
+  if(!c)return;
+  const scale=c.rect.width/c.W;
+  const sx=(clientX-c.rect.left)/scale;
+  const xv=c.x0+(sx-c.padL)/c.iw*(c.x1-c.x0);
+  let v;
+  if(c.mode===2){
+    const sy=(clientY-c.rect.top)/scale;
+    const yv=c.y0+(c.padT+c.ih-sy)/c.ih*(c.y1-c.y0);
+    // the curve is moved to pass through the pointer
+    v = c.dfun==="lin" ? SUB.ax*Math.max(0,xv)+SUB.ay*Math.max(0,yv)
+                       : Math.max(0,xv)*Math.max(0,yv);
+  }else{
+    v = xv;
+  }
+  v=Math.max(c.dmin,Math.min(c.dmax,v));
+  setPath(c.path,+v.toFixed(3));
+  refresh();
+}
+document.addEventListener("pointerdown",beginDrag);
+window.addEventListener("pointermove",ev=>{if(dragCtx)moveDrag(ev.clientX,ev.clientY);});
+window.addEventListener("pointerup",()=>{dragCtx=null;});
+window.addEventListener("pointercancel",()=>{dragCtx=null;});
+
+function setRail(off){
+  document.body.setAttribute("data-rail",off?"off":"on");
+  const b=document.getElementById("railToggle");
+  b.textContent=off?"› Show plates":"‹ Hide plates";
+  b.setAttribute("aria-expanded",String(!off));
+  try{localStorage.setItem("um-rail",off?"off":"on");}catch(e){}
+}
+function toggleRail(){setRail(document.body.getAttribute("data-rail")!=="off");}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute("data-theme");
+  const dark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const next=cur?(cur==="dark"?"light":"dark"):(dark?"light":"dark");
+  document.documentElement.setAttribute("data-theme",next);
+  try{localStorage.setItem("um-theme",next);}catch(e){}
+}
+try{const t=localStorage.getItem("um-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+
+buildRail();
+let railOff=false;
+try{railOff=localStorage.getItem("um-rail")==="off";}catch(e){}
+setRail(railOff);
+render();
+</script>
+
+</body></html>

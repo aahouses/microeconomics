@@ -1,0 +1,1480 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Profit Maximization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------------
+   CUNEF brand: Naranja 166C #ff5700, Azul 2118C #1a1f6c,
+   Beige 7527C #d6d1c4, Beige Claro #f0ece8.  Type: Taviraj display,
+   Arial body (the manual's substitute for Aeonik).
+   Colour rule: one hue, one meaning, on every plate.
+     AZUL    = the buyers' side   (D, MR, the price a firm faces, CS)
+     NARANJA = the firm's costs   (MC, AC, AVC, S, PS)
+     BLACK   = the outcome        (optimum, equilibrium, profit, DWL)
+   ------------------------------------------------------------------ */
+:root{
+  --display:"Taviraj",Georgia,"Times New Roman",serif;
+  --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
+
+  --ground:#f0ece8;
+  --panel:#ffffff;
+  --panel-2:#f7f4f1;
+  --beige:#d6d1c4;
+  --ink:#000000;
+  --ink-2:#4a4741;
+  --ink-3:#7d786f;
+  --orange:#ff5700;
+  --azul:#1a1f6c;
+  --azul-soft:#d2e0f3;
+
+  /* semantic aliases used by the figures */
+  --demand:var(--azul);
+  --supply:var(--orange);
+  --mr:var(--azul);
+  --cost-2:#ff9a5c;      /* a tint of Naranja: AC against MC */
+  --cost-3:#c98a63;      /* muted Naranja: AVC */
+  --dwl:var(--ink);
+  --good:var(--ink);
+
+  --fill-cs:rgba(26,31,108,.13);
+  --fill-ps:rgba(255,87,0,.13);
+  --fill-ink:rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0b0b0c; --panel:#16161a; --panel-2:#1d1d21;
+    --beige:#3b362c; --ink:#ffffff; --ink-2:#c8c4bc; --ink-3:#8e8a82;
+    --orange:#ff7a45; --azul:#93a4ea; --azul-soft:#22305e;
+    --cost-2:#ffb98f; --cost-3:#d9a583;
+    --fill-cs:rgba(147,164,234,.17);
+    --fill-ps:rgba(255,122,69,.15);
+    --fill-ink:rgba(255,255,255,.10);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0b0b0c; --panel:#16161a; --panel-2:#1d1d21;
+  --beige:#3b362c; --ink:#ffffff; --ink-2:#c8c4bc; --ink-3:#8e8a82;
+  --orange:#ff7a45; --azul:#93a4ea; --azul-soft:#22305e;
+  --cost-2:#ffb98f; --cost-3:#d9a583;
+  --fill-cs:rgba(147,164,234,.17);
+  --fill-ps:rgba(255,122,69,.15);
+  --fill-ink:rgba(255,255,255,.10);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.52;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+
+.rail{border-right:1px solid var(--beige);background:var(--panel);padding-block:22px;padding-left:18px;padding-right:14px;position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto}
+.brand{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;margin:0}
+.brand span{display:block;font-family:var(--body);font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-top:7px}
+.rail ol{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column}
+.rail button{width:100%;text-align:left;background:none;border:0;cursor:pointer;font-family:var(--body);font-size:12.5px;line-height:1.3;color:var(--ink-2);padding:7px 6px 7px 0;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:baseline}
+.rail button i{font-style:normal;font-size:10.5px;color:var(--azul);font-weight:700}
+.rail button:hover{color:var(--ink)}
+.rail button[aria-current="true"]{color:var(--ink);font-weight:700}
+.rail button[aria-current="true"] i{color:var(--orange)}
+.rail .group{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:15px 0 3px;padding-top:9px;border-top:1px solid var(--beige)}
+.key{margin-top:20px;padding-top:12px;border-top:2px solid var(--orange);font-size:11.5px;line-height:1.45;color:var(--ink-2)}
+.key b{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.key i{font-style:normal;font-weight:700}
+.key .a{color:var(--azul)} .key .o{color:var(--orange)} .key .k{color:var(--ink)}
+
+main{padding-block:24px 56px;padding-left:32px;padding-right:32px;max-width:1700px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.topbar .sp{flex:1}
+.railbtn,.themebtn{font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--panel);border:1px solid var(--beige);color:var(--ink-2);padding:7px 11px;cursor:pointer}
+.railbtn:hover,.themebtn:hover{border-color:var(--orange);color:var(--ink)}
+body[data-rail="off"] .rail{display:none}
+body[data-rail="off"] .wrap{grid-template-columns:minmax(0,1fr)}
+
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin:0 0 7px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(25px,2.7vw,36px);line-height:1.1;margin:0 0 4px}
+.rule{height:2px;background:var(--orange);width:56px;margin:12px 0 14px}
+h2{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 7px}
+.lead{margin:0;font-size:16.5px;color:var(--ink-2);max-width:66ch}
+p{margin:0 0 11px}
+.step{display:block}
+.phead{max-width:80ch;margin-bottom:16px}
+.phead .lead{margin-bottom:0}
+.prose{margin-top:24px;padding-top:18px;border-top:1px solid var(--beige);columns:2;column-gap:42px}
+.prose > *{break-inside:avoid}
+.prose h2{margin-top:4px;break-after:avoid}
+.prose .tw,.prose .cards{column-span:all;break-inside:avoid}
+@media (max-width:900px){.prose{columns:1}}
+
+ul,ul.plain{margin:0 0 12px;padding-left:19px}
+li{margin-bottom:6px}
+.m{font-family:var(--body);color:var(--azul);font-weight:700;white-space:nowrap}
+.eq{font-family:var(--body);font-size:15px;background:var(--panel);border-left:3px solid var(--azul);padding:10px 14px;margin:0 0 12px;line-height:1.75;overflow-x:auto}
+.eq b{color:var(--azul)}
+.k{font-family:var(--body);font-weight:700}
+.k-d{color:var(--azul)}.k-s{color:var(--orange)}.k-mr{color:var(--azul)}.k-dwl{color:var(--ink)}
+.note{font-size:13.5px;color:var(--ink-2);border-top:1px solid var(--beige);padding-top:10px}
+.note em,.note b{color:var(--ink);font-style:normal}
+
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 16px}
+.card{border:1px solid var(--beige);background:var(--panel);padding:13px 14px}
+.card h3{font-family:var(--display);font-size:15px;font-weight:600;margin:0 0 5px}
+.card p{font-size:13.5px;color:var(--ink-2);margin:0}
+.card .num{font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.12em;display:block;margin-bottom:6px}
+
+.figs{display:grid;gap:16px;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.figs.one{grid-auto-columns:minmax(0,760px);justify-content:start}
+@media (max-width:900px){.figs,.figs.one{grid-auto-flow:row;grid-auto-columns:minmax(0,1fr)}}
+figure{margin:0;border:1px solid var(--beige);background:var(--panel);padding:10px 12px 8px}
+figcaption{font-size:11.5px;line-height:1.4;color:var(--ink-2);margin-top:5px;border-top:1px solid var(--beige);padding-top:7px}
+figcaption b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+svg.fig{display:block;width:100%;max-width:100%;height:auto}
+.fig text{font-family:Arial,Helvetica,sans-serif;font-size:13px;fill:var(--ink-2)}
+.fig .tick{font-size:12px;fill:var(--ink-3)}
+.fig .axlab{font-size:12.5px;font-weight:700;fill:var(--ink-3)}
+.fig .clab{font-size:14px;font-weight:700}
+.fig .anno{font-size:13px;fill:var(--ink-2)}
+.fig .big{font-size:14px;font-weight:700;fill:var(--ink)}
+.fig .grid{stroke:var(--beige);stroke-width:1;fill:none;opacity:.7}
+.fig .axis{stroke:var(--ink-3);stroke-width:1.2;fill:none}
+.fig .arw{fill:var(--ink-3)}
+.fig .hatchline{stroke:var(--ink);stroke-width:1.2}
+.fig .guide{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3;fill:none}
+.fig .curve{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.c-d{stroke:var(--azul)}      .t-d{fill:var(--azul)}
+.c-s{stroke:var(--orange)}    .t-s{fill:var(--orange)}
+.c-mr{stroke:var(--azul)}     .t-mr{fill:var(--azul)}
+.c-ac{stroke:var(--cost-2)}   .t-ac{fill:var(--cost-2)}
+.c-avc{stroke:var(--cost-3)}  .t-avc{fill:var(--cost-3)}
+.c-dwl{stroke:var(--ink)}     .t-dwl{fill:var(--ink)}
+.c-ink{stroke:var(--ink)}     .t-ink{fill:var(--ink)}
+.c-mute{stroke:var(--ink-3)}
+.c-ghost{stroke:var(--orange);opacity:.5}
+.f-cs{fill:var(--fill-cs)}
+.f-ps{fill:var(--fill-ps)}
+.f-k,.f-good,.f-bad,.f-dwl{fill:var(--fill-ink)}
+.dot{stroke:var(--panel);stroke-width:1.5}
+
+.ctrls{display:flex;flex-wrap:wrap;gap:13px 20px;align-items:flex-end;margin:14px 0 12px;padding:12px 14px;border:1px solid var(--beige);background:var(--panel)}
+.ctrl{display:flex;flex-direction:column;gap:4px;min-width:146px}
+.ctrl label{font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;gap:10px}
+.ctrl label b{color:var(--azul);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:18px;background:none;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--beige)}
+input[type=range]::-moz-range-track{height:2px;background:var(--beige)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--orange);margin-top:-5.5px;border:0}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--orange)}
+input[type=range]:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.seg{display:flex;border:1px solid var(--beige)}
+.seg button{font-family:var(--body);font-size:12px;padding:6px 11px;background:var(--panel);border:0;border-right:1px solid var(--beige);color:var(--ink-2);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--azul);color:#fff}
+.act{font-family:var(--body);font-size:12.5px;padding:8px 13px;background:var(--panel);border:1px solid var(--beige);color:var(--ink);cursor:pointer}
+.act:hover{border-color:var(--orange)}
+.act:disabled{opacity:.35;cursor:default}
+.act:disabled:hover{border-color:var(--beige)}
+.chk{font-size:12.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center;cursor:pointer}
+.chk input{accent-color:var(--orange);width:14px;height:14px}
+
+.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--beige);border:1px solid var(--beige);margin:0 0 12px}
+.stat{background:var(--panel);padding:8px 11px;flex:1 1 112px}
+.stat dt{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-3);margin:0 0 2px}
+.stat dd{margin:0;font-size:17px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat dd small{display:block;font-size:10.5px;color:var(--ink-3)}
+.verdict{font-size:14px;padding:10px 14px;background:var(--panel);border-left:3px solid var(--orange);margin:0 0 12px}
+.verdict.up{border-color:var(--azul)}
+.verdict.down{border-color:var(--orange)}
+.verdict b{color:var(--azul)}
+
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 12px;background:var(--panel)}
+th,td{text-align:right;padding:8px 11px;border-bottom:1px solid var(--beige)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-3)}
+td{font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0;font-weight:700}
+.tw{overflow-x:auto;border:1px solid var(--beige)}
+td.win{color:var(--azul);font-weight:700}
+
+.pager{display:flex;gap:10px;align-items:center;margin-top:26px;padding-top:14px;border-top:1px solid var(--beige)}
+.pager .sp{flex:1}
+.pager .cnt{font-size:11px;color:var(--ink-3);letter-spacing:.06em}
+
+@media (max-width:960px){
+  .wrap{grid-template-columns:1fr}
+  .rail{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--beige);padding-right:18px}
+  .rail ol{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .rail button{width:auto;white-space:nowrap;border:1px solid var(--beige);padding:6px 9px;grid-template-columns:auto auto}
+  .rail .group,.key{display:none}
+  main{padding-left:18px;padding-right:18px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<nav class="rail" aria-label="Plates">
+  <p class="brand">Profit Maximization<span>Microeconomics</span></p>
+  <ol id="rail"></ol>
+  <div class="key"><b>Reading the figures</b>
+    <i class="a">Blue</i> — the buyers' side<br>
+    <i class="o">Orange</i> — the firm's costs<br>
+    <i class="k">Black</i> — the outcome
+  </div>
+</nav>
+
+<main>
+  <div class="topbar">
+    <button class="railbtn" id="railToggle" type="button" aria-expanded="true">‹ Hide plates</button>
+    <span class="sp"></span>
+    <button class="themebtn" id="theme" type="button">Theme</button>
+  </div>
+  <div id="stage"></div>
+  <div class="pager">
+    <button class="act" id="prev" type="button">← Previous</button>
+    <button class="act" id="next" type="button">Next →</button>
+    <span class="sp"></span>
+    <span class="cnt" id="cnt"></span>
+  </div>
+</main>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   1. Model constants and helper math
+   ============================================================ */
+
+// Plate 1: profit-maximisation example.  TC(q) = F + cq + (e/2)q^2
+const P1 = {F:100, c:10, e:1, a:100, b:1};
+const p1_TC  = q => P1.F + P1.c*q + P1.e/2*q*q;
+const p1_MC  = q => P1.c + P1.e*q;
+const p1_VC  = q => P1.c*q + P1.e/2*q*q;
+
+// Competitive firm (Plates 6-10):  TC(q) = F + aq - bq^2 + gq^3
+const FIRM = {F:50, a:40, b:12, g:1.5};
+const MC   = q => FIRM.a - 2*FIRM.b*q + 3*FIRM.g*q*q;
+const AVC  = q => FIRM.a - FIRM.b*q + FIRM.g*q*q;
+const VC   = q => FIRM.a*q - FIRM.b*q*q + FIRM.g*q*q*q;
+const TC   = q => FIRM.F + VC(q);
+const AC   = q => q<=0 ? Infinity : TC(q)/q;
+
+// min AVC (= short-run shut-down price) has a closed form for this cubic
+const Q_MINAVC = FIRM.b/(2*FIRM.g);            // 4
+const P_SHUT   = AVC(Q_MINAVC);                // 16
+// min AC found numerically once
+const Q_MINAC = (function(){
+  let lo=1, hi=8;
+  for(let i=0;i<80;i++){const m1=lo+(hi-lo)/3, m2=hi-(hi-lo)/3; if(AC(m1)<AC(m2)) hi=m2; else lo=m1;}
+  return (lo+hi)/2;
+})();
+const P_LR = AC(Q_MINAC);                      // long-run competitive price
+
+// individual short-run supply: larger root of MC(q)=p, only if p >= min AVC
+function supply_i(p){
+  if(p < P_SHUT) return 0;
+  const disc = 4*FIRM.b*FIRM.b - 12*FIRM.g*(FIRM.a-p);
+  if(disc < 0) return 0;
+  return (2*FIRM.b + Math.sqrt(disc))/(6*FIRM.g);
+}
+
+// Market (Plates 8-10): inverse demand P = A - B*Q
+const MKT = {A:100, B:0.5};
+
+function marketEq(N, A, B){
+  const D = P => Math.max(0,(A-P)/B);
+  let lo=0.01, hi=A;
+  for(let i=0;i<70;i++){
+    const m=(lo+hi)/2;
+    if(N*supply_i(m) - D(m) > 0) hi=m; else lo=m;
+  }
+  const P=(lo+hi)/2, q=supply_i(P), Q=N*q;
+  const psi = P*q - VC(q), pi = psi - FIRM.F;
+  return {P, q, Q, psi, pi, CS:0.5*Math.max(0,A-P)*Math.max(0,(A-P)/B), PS:N*psi};
+}
+
+const fmt = (x,d=1)=>{
+  if(!Number.isFinite(x)) return "—";
+  return x.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+};
+const eur = (x,d=0)=>"€"+fmt(x,d);
+
+/* ============================================================
+   2. Tiny SVG plotting kit
+   ============================================================ */
+// x_1 and x^2 become real sub- and superscripts inside SVG text
+function mt(s){
+  return String(s)
+    .replace(/([A-Za-z0-9*)])\^([A-Za-z0-9*+-]+)/g,(m,a,b)=>a+'<tspan baseline-shift="super" font-size="72%">'+b+'</tspan>')
+    .replace(/([A-Za-z0-9*)])_([A-Za-z0-9*]+)/g,(m,a,b)=>a+'<tspan baseline-shift="-22%" font-size="72%">'+b+'</tspan>');
+}
+
+let __uid = 0;
+
+function Plot(opt){
+  const o = Object.assign({
+    w:560,h:400,x0:0,x1:10,y0:0,y1:10,
+    padL:54,padR:74,padT:36,padB:46,
+    xlab:"q", ylab:"€", aria:""
+  }, opt);
+  const u = "u"+(++__uid);
+  const iw = o.w-o.padL-o.padR, ih = o.h-o.padT-o.padB;
+  const X = v => o.padL + (v-o.x0)/(o.x1-o.x0)*iw;
+  const Y = v => o.padT + ih - (v-o.y0)/(o.y1-o.y0)*ih;
+  const back = [], body = [], front = [];
+
+  const P = {X,Y,o,u,
+    axes(xt,yt){
+      const L=[];
+      (yt||[]).forEach(t=>L.push(`<line class="grid" x1="${X(o.x0)}" y1="${Y(t.v)}" x2="${X(o.x1)}" y2="${Y(t.v)}"/>`));
+      (xt||[]).forEach(t=>L.push(`<line class="grid" x1="${X(t.v)}" y1="${Y(o.y0)}" x2="${X(t.v)}" y2="${o.padT}"/>`));
+      L.push(`<line class="axis" x1="${o.padL}" y1="${Y(o.y0)}" x2="${o.padL+iw+16}" y2="${Y(o.y0)}" marker-end="url(#${u}-arw)"/>`);
+      L.push(`<line class="axis" x1="${o.padL}" y1="${Y(o.y0)}" x2="${o.padL}" y2="${o.padT-16}" marker-end="url(#${u}-arw)"/>`);
+      (xt||[]).forEach(t=>L.push(`<text class="tick" x="${X(t.v)}" y="${Y(o.y0)+16}" text-anchor="middle">${mt(t.t!==undefined?t.t:t.v)}</text>`));
+      (yt||[]).forEach(t=>L.push(`<text class="tick" x="${o.padL-8}" y="${Y(t.v)+4}" text-anchor="end">${mt(t.t!==undefined?t.t:t.v)}</text>`));
+      L.push(`<text class="axlab" x="${o.padL+iw+14}" y="${Y(o.y0)+20}" text-anchor="start">${mt(o.xlab)}</text>`);
+      L.push(`<text class="axlab" x="${o.padL-8}" y="${o.padT-20}" text-anchor="end">${mt(o.ylab)}</text>`);
+      back.push(L.join(""));
+      return P;
+    },
+    curve(f,c){
+      c = c||{};
+      const from = c.from!==undefined?c.from:o.x0, to = c.to!==undefined?c.to:o.x1, n = c.n||160;
+      const pts=[];
+      for(let i=0;i<=n;i++){
+        const x = from+(to-from)*i/n, y = f(x);
+        if(Number.isFinite(y)) pts.push(X(x).toFixed(1)+","+Y(y).toFixed(1));
+      }
+      if(pts.length>1){
+        body.push(`<g clip-path="url(#${u}-clip)"><polyline class="curve ${c.cls||"c-ink"}" points="${pts.join(" ")}" stroke-width="${c.w||2.2}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      }
+      if(c.label!==undefined){
+        const lx = c.labelAt!==undefined?c.labelAt:to;
+        const ly = c.labelY!==undefined?c.labelY:f(lx);
+        front.push(`<text class="clab ${c.tcls||"t-ink"}" x="${X(lx)+(c.ldx!==undefined?c.ldx:8)}" y="${Y(ly)+(c.ldy!==undefined?c.ldy:4)}" text-anchor="${c.lanchor||"start"}">${mt(c.label)}</text>`);
+      }
+      return P;
+    },
+    line(pts,c){
+      c=c||{};
+      const s = pts.filter(pt=>Number.isFinite(pt[0])&&Number.isFinite(pt[1]))
+                   .map(pt=>X(pt[0]).toFixed(1)+","+Y(pt[1]).toFixed(1)).join(" ");
+      body.push(`<g clip-path="url(#${u}-clip)"><polyline class="curve ${c.cls||"c-ink"}" points="${s}" stroke-width="${c.w||2.2}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      return P;
+    },
+    poly(pts,c){
+      c=c||{};
+      const s = pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ");
+      body.push(`<g clip-path="url(#${u}-clip)"><polygon class="${c.cls||"f-cs"}" points="${s}" ${c.stroke?`stroke="${c.stroke}" stroke-width="1"`:'stroke="none"'}/>${c.hatch?`<polygon points="${s}" fill="url(#${u}-hatch)" stroke="none"/>`:""}</g>`);
+      return P;
+    },
+    seg(x1,y1,x2,y2,c){
+      c=c||{};
+      body.push(`<g clip-path="url(#${u}-clip)"><line class="${c.cls||"guide"}" x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke-width="${c.w||1}"${c.dash?` stroke-dasharray="${c.dash}"`:""}/></g>`);
+      return P;
+    },
+    dot(x,y,c){
+      c=c||{};
+      front.push(`<circle class="dot" cx="${X(x)}" cy="${Y(y)}" r="${c.r||4}" fill="${c.fill||"var(--ink)"}"/>`);
+      if(c.label) front.push(`<text class="big" x="${X(x)+(c.ldx||8)}" y="${Y(y)+(c.ldy||-8)}" text-anchor="${c.anchor||"start"}">${mt(c.label)}</text>`);
+      return P;
+    },
+    txt(x,y,s,c){
+      c=c||{};
+      front.push(`<text class="${c.cls||"anno"}" x="${X(x)+(c.dx||0)}" y="${Y(y)+(c.dy||0)}" text-anchor="${c.anchor||"middle"}">${mt(s)}</text>`);
+      return P;
+    },
+    px(s){front.push(s);return P;},
+    svg(){
+      const defs = `<defs>
+        <marker id="${u}-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path class="arw" d="M0,1.5 L9,5 L0,8.5 z"/></marker>
+        <clipPath id="${u}-clip"><rect x="${o.padL-1}" y="${o.padT-8}" width="${iw+10}" height="${ih+9}"/></clipPath>
+        <pattern id="${u}-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatchline" x1="0" y1="0" x2="0" y2="7"/></pattern>
+      </defs>`;
+      return `<svg class="fig" viewBox="0 0 ${o.w} ${o.h}" role="img" aria-label="${o.aria}">${defs}${back.join("")}${body.join("")}${front.join("")}</svg>`;
+    }
+  };
+  return P;
+}
+
+function ticks(lo,hi,step,dec){
+  const out=[];
+  for(let v=lo; v<=hi+1e-9; v+=step) out.push({v:+v.toFixed(6), t:fmt(v,dec||0)});
+  return out;
+}
+// nice round tick marks between lo and hi, roughly n of them
+const NICE = [1,2,2.5,5,10,20,25,50,100,200,250,500,1000];
+function autoTicks(lo,hi,n){
+  const raw = (hi-lo)/(n||5);
+  let step = NICE[NICE.length-1];
+  for(const s of NICE){ if(s>=raw){ step=s; break; } }
+  const dec = step<1 ? 1 : 0;
+  const out=[];
+  const start = Math.ceil(lo/step)*step;
+  for(let v=start; v<=hi+1e-9; v+=step) out.push({v:+v.toFixed(6), t:fmt(v,dec)});
+  return out;
+}
+function fig(svg,capTitle,capText){
+  return `<figure>${svg}<figcaption><b>${capTitle}</b>${capText}</figcaption></figure>`;
+}
+
+/* ============================================================
+   3. State
+   ============================================================ */
+const S = {
+  step:1,
+  p1:{mode:"taker", q:18, p:40},
+  mon:{a:100, b:1, c:20, build:3, cs:true, ps:true, dwl:true},
+  p2:{a:100, b:1, dq:8},
+  p5:{N:100},
+  p6:{p:34},
+  p7:{p:34, trace:[]},
+  p8:{N:20, p:34},
+  p9:{N:30, A:100, areas:true}
+};
+
+const PLATES = [
+  {n:1,  t:"Profit maximization",          g:"One rule"},
+  {n:2,  t:"Marginal revenue",             g:"Market power"},
+  {n:3,  t:"Monopoly equilibrium",         g:"Market power"},
+  {n:4,  t:"Surplus and deadweight loss",  g:"Market power"},
+  {n:5,  t:"The assumptions",              g:"Price takers"},
+  {n:6,  t:"The short-run output decision",g:"Price takers"},
+  {n:7,  t:"The individual supply curve",  g:"Price takers"},
+  {n:8,  t:"From individual to market supply", g:"Price takers"},
+  {n:9,  t:"Competitive equilibrium",      g:"Price takers"},
+  {n:10, t:"Monopoly versus competition",  g:"Verdict"}
+];
+
+/* ============================================================
+   4. Plates
+   ============================================================ */
+
+/* ---------- Plate 1: profit maximisation ---------- */
+function plate1(){
+  const st = S.p1, mono = st.mode==="mono";
+  const TR = q => mono ? (P1.a - P1.b*q)*q : st.p*q;
+  const MR = q => mono ? P1.a - 2*P1.b*q : st.p;
+  const PI = q => TR(q) - p1_TC(q);
+  const qstar = mono ? (P1.a-P1.c)/(2*P1.b+P1.e) : Math.max(0,(st.p-P1.c)/P1.e);
+  const q = st.q;
+  const piNow = PI(q), piMax = PI(qstar);
+  const mrNow = MR(q), mcNow = p1_MC(q);
+
+  // (a) TR and TC
+  const topY = Math.max(p1_TC(60), TR(60), TR(qstar))*1.10;
+  const A = Plot({w:560,h:410,x0:0,x1:60,y0:0,y1:topY,padR:78,
+    xlab:"q", ylab:"€", aria:"Total revenue and total cost against quantity; profit is the vertical gap between them."});
+  A.axes(ticks(0,60,10), autoTicks(0,topY*0.97,6));
+  A.curve(p1_TC,{cls:"c-s",w:2.4,label:"TC(q)",tcls:"t-s",labelAt:52,ldy:26,ldx:-2});
+  A.curve(TR,{cls:"c-d",w:2.4,label:"TR(q)",tcls:"t-d",labelAt:29,ldy:-14,ldx:-8});
+  // profit gap
+  if(piNow>0){
+    A.seg(q,p1_TC(q),q,TR(q),{cls:"c-ink",w:7,dash:null});
+  }else{
+    A.seg(q,TR(q),q,p1_TC(q),{cls:"c-dwl",w:7});
+  }
+  A.seg(qstar,0,qstar,Math.max(TR(qstar),p1_TC(qstar)),{cls:"guide"});
+  A.dot(q,TR(q),{r:3.5,fill:"var(--demand)"});
+  A.dot(q,p1_TC(q),{r:3.5,fill:"var(--supply)"});
+  A.txt(q,(TR(q)+p1_TC(q))/2,(piNow>=0?"π = ":"loss ")+eur(Math.abs(piNow)),{cls:"big",dx:12,dy:4,anchor:"start"});
+  A.txt(qstar,0,"q* = "+fmt(qstar,1),{cls:"tick",dy:28,anchor:"middle"});
+
+  // (b) profit curve
+  const piTop = Math.max(60, Math.ceil(piMax*1.25/100)*100);
+  const piBot = Math.min(-100, Math.floor(Math.min(PI(0),PI(60))*1.3/100)*100);
+  const B = Plot({w:560,h:410,x0:0,x1:60,y0:piBot,y1:piTop,padR:70,
+    xlab:"q", ylab:"π", aria:"The profit function is a hill that peaks at the quantity where marginal revenue equals marginal cost."});
+  B.axes(ticks(0,60,10), autoTicks(piBot,piTop*0.97,5));
+  B.seg(0,0,60,0,{cls:"axis",w:1});
+  const pts=[[0,0]];
+  for(let i=0;i<=120;i++){const x=60*i/120; pts.push([x,Math.max(piBot,PI(x))]);}
+  pts.push([60,0]);
+  B.poly(pts,{cls:"f-k"});
+  B.curve(PI,{cls:"c-ink",w:2.2,label:"π(q)",labelAt:57,ldy:-10});
+  B.seg(qstar,piBot,qstar,piMax,{cls:"guide"});
+  B.dot(qstar,piMax,{r:4.5,fill:"var(--ink)",label:"max π = "+eur(piMax),ldx:-8,anchor:"end",ldy:-10});
+  B.dot(q,PI(q),{r:3.5,fill:"var(--ink)"});
+
+  // (c) MR and MC
+  const cTop = Math.max(105, st.p*1.15, p1_MC(60)*1.1);
+  const C = Plot({w:560,h:410,x0:0,x1:60,y0:mono?-25:0,y1:cTop,padR:74,
+    xlab:"q", ylab:"€/unit", aria:"Marginal revenue and marginal cost cross at the profit-maximising quantity; the wedge between them measures profit given up."});
+  C.axes(ticks(0,60,10), autoTicks(mono?-20:0,cTop*0.95,5));
+  if(mono) C.seg(0,0,60,0,{cls:"axis",w:1});
+  // wedge of forgone profit between q and q*
+  const lo=Math.min(q,qstar), hi=Math.max(q,qstar);
+  if(hi-lo>0.4){
+    const w=[[lo,MR(lo)]];
+    for(let i=0;i<=40;i++){const x=lo+(hi-lo)*i/40; w.push([x,MR(x)]);}
+    for(let i=40;i>=0;i--){const x=lo+(hi-lo)*i/40; w.push([x,p1_MC(x)]);}
+    C.poly(w,{cls:"f-dwl",hatch:true});
+    C.txt((lo+hi)/2,Math.min(MR(lo),p1_MC(lo),MR(hi),p1_MC(hi)),"profit given up",{cls:"anno",dy:26});
+  }
+  C.curve(p1_MC,{cls:"c-s",w:2.4,label:"MC",tcls:"t-s",labelAt:58});
+  C.curve(MR,{cls:"c-mr",w:2.4,dash:"8 4",label:mono?"MR = a − 2bq":"MR = p",tcls:"t-mr",labelAt:mono?44:52,ldy:-12,lanchor:"end"});
+  C.seg(q,0,q,Math.max(MR(q),p1_MC(q)),{cls:"guide"});
+  C.dot(qstar,p1_MC(qstar),{r:4.5,fill:"var(--ink)",label:"MR = MC at q* = "+fmt(qstar,1),ldx:-12,anchor:"end",ldy:-16});
+
+  const verdict = Math.abs(q-qstar)<0.5
+    ? {c:"", s:"MR = MC. Nothing left on the table — this is q*."}
+    : (q<qstar
+      ? {c:"up", s:`MR = ${fmt(mrNow,1)} > MC = ${fmt(mcNow,1)}. The next unit adds more to revenue than to cost → <b>produce more</b>.`}
+      : {c:"down", s:`MR = ${fmt(mrNow,1)} < MC = ${fmt(mcNow,1)}. The last unit costs more than it brings in → <b>produce less</b>.`});
+
+  return {
+    eyebrow:"Plate 1 · One rule",
+    h1:"Profit maximization",
+    text:`
+      <p class="lead">A firm's problem is always the same: choose <span class="m">q</span> to maximise
+      <span class="m">π(q) = TR(q) − TC(q)</span>. Nothing about the market structure enters yet.</p>
+      <div class="eq"><b>max<sub>q</sub> π(q) = TR(q) − TC(q)</b><br>FOC: dTR/dq = dTC/dq &nbsp;⟹&nbsp; <b>MR(q*) = MC(q*)</b></div>
+      <div class="eq">TC(q) = <b>FC</b> + VC(q) &nbsp;=&nbsp; <b>100</b> + 10q + 0.5q²<br>
+      MC = dTC/dq = dVC/dq = 10 + q &nbsp;&nbsp;<span style="color:var(--ink-3)">← FC has vanished</span></div>
+      <h2>Where the fixed cost went</h2>
+      <ul>
+        <li>FC = €100 is the vertical intercept of TC in panel (a).</li>
+        <li>It is constant, so it never appears in MC.</li>
+        <li>It lowers the profit hill by exactly €100 without moving its peak.</li>
+      </ul>
+      <p>Fixed costs change <b>whether</b> to be in this business, never <b>how much</b> to produce once you are.</p>
+      <p>The hill in panel (b) peaks where the two curves in panel (a) are <em>parallel</em> — same slope, maximum vertical distance. That is the whole content of <span class="m">MR = MC</span>.</p>
+      <p>Switch the market structure with the toggle. The <em>rule</em> is identical in perfect competition, monopoly and oligopoly; only the <span class="k k-mr">MR</span> curve changes. A price taker's extra unit sells at <span class="m">p</span>, so <span class="m">MR = p</span>. A monopolist must cut the price to sell more, so <span class="m">MR &lt; p</span>.</p>
+      <div class="verdict ${verdict.c}">${verdict.s}</div>
+      <p class="note">Cost function used throughout this plate: <span class="m">TC(q) = 100 + 10q + 0.5q²</span> — that is <em>FC = 100</em>, <span class="m">VC(q) = 10q + 0.5q²</span>, <span class="m">MC = 10 + q</span>. Reference: Pindyck &amp; Rubinfeld, ch. 8.</p>`,
+    ctrls:`
+      <div class="ctrl" style="min-width:auto">
+        <label>Market structure</label>
+        <div class="seg">
+          <button type="button" data-seg="p1.mode" data-val="taker" aria-pressed="${!mono}">Price taker</button>
+          <button type="button" data-seg="p1.mode" data-val="mono" aria-pressed="${mono}">Monopolist</button>
+        </div>
+      </div>
+      <div class="ctrl"><label>Quantity produced <b>q = ${fmt(q,1)}</b></label>
+        <input type="range" id="p1q" data-num="p1.q" min="1" max="58" step="0.5" value="${q}"></div>
+      ${mono
+        ? `<div class="ctrl" style="min-width:auto"><label>Inverse demand faced</label>
+           <div class="eq" style="margin:0;padding:5px 10px;font-size:12px">P(q) = 100 − q</div></div>`
+        : `<div class="ctrl"><label>Market price <b>p = ${fmt(st.p,0)}</b></label>
+           <input type="range" id="p1p" data-num="p1.p" min="15" max="90" step="1" value="${st.p}"></div>`}`,
+    stats:[
+      ["TR", eur(TR(q))],["TC", eur(p1_TC(q))],
+      ["of which FC", eur(P1.F)],["of which VC", eur(p1_VC(q))],
+      ["Profit now", eur(piNow)],["MR", fmt(mrNow,1)],["MC", fmt(mcNow,1)],
+      ["q*", fmt(qstar,1)],["Profit at q*", eur(piMax)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 1a — Totals","Profit is the vertical distance between TR and TC. It is largest where the curves run parallel."),
+      fig(B.svg(),"Fig. 1b — The profit hill","π(q) rises while MR &gt; MC and falls once MR &lt; MC. The peak sits exactly at q*."),
+      fig(C.svg(),"Fig. 1c — Margins","The hatched wedge between MR and MC is the profit thrown away by producing q instead of q*.")
+    ],
+    figCls:"figs"
+  };
+}
+
+/* ---------- Plate 2: the monopolist's demand and MR ---------- */
+function plate2(){
+  const st = S.p2, a = st.a, b = st.b, dq = st.dq;
+  const D  = Q => a - b*Q;
+  const MR = Q => a - 2*b*Q;
+  const Qmax = a/b;
+  const Q0 = Qmax*0.35, Q1 = Q0+dq;
+  const P0 = D(Q0), P1_ = D(Q1);
+
+  const A = Plot({w:560,h:430,x0:0,x1:Qmax*1.05,y0:-a*0.28,y1:a*1.06,padR:86,
+    xlab:"Q", ylab:"€", aria:"A monopolist faces the whole market demand curve; its marginal revenue curve lies below demand with twice the slope."});
+  A.axes(autoTicks(0,Qmax,5), autoTicks(-a*0.25,a,6));
+  A.seg(0,0,Qmax*1.05,0,{cls:"axis",w:1});
+  A.curve(D,{from:0,to:Qmax,cls:"c-d",w:2.6,label:"D = d",tcls:"t-d",labelAt:Qmax*0.93,ldy:-10});
+  A.curve(MR,{from:0,to:Qmax,cls:"c-mr",w:2.4,dash:"8 4",label:"MR",tcls:"t-mr",labelAt:Qmax*0.52,ldy:-12});
+  A.txt(Qmax*0.66,D(Qmax*0.66),"slope −b",{cls:"anno",dy:-9,dx:-4});
+  A.txt(Qmax*0.33,MR(Qmax*0.33),"slope −2b",{cls:"anno",dy:18});
+  A.dot(Qmax/2,0,{r:4,fill:"var(--mr)",label:"MR = 0 at Q = a/2b",ldx:8,ldy:18});
+
+  // (b) the inframarginal story
+  const B = Plot({w:560,h:430,x0:0,x1:Qmax*0.75,y0:0,y1:a*1.06,padR:80,
+    xlab:"Q", ylab:"€", aria:"Selling an extra unit gains price times one unit but loses the price cut on every unit already sold."});
+  B.axes(autoTicks(0,Qmax*0.72,4), autoTicks(0,a,5));
+  B.curve(D,{from:0,to:Qmax*0.75,cls:"c-d",w:2.4,label:"D",tcls:"t-d",labelAt:Qmax*0.72,ldy:-6});
+  // gain: the sliver of new revenue
+  B.poly([[Q0,0],[Q1,0],[Q1,P1_],[Q0,P1_]],{cls:"f-cs"});
+  // loss: price cut on inframarginal units
+  B.poly([[0,P1_],[Q0,P1_],[Q0,P0],[0,P0]],{cls:"f-cs",hatch:true});
+  B.seg(0,P0,Q0,P0,{cls:"guide"});
+  B.seg(0,P1_,Q1,P1_,{cls:"guide"});
+  B.seg(Q0,0,Q0,P0,{cls:"guide"});
+  B.seg(Q1,0,Q1,P1_,{cls:"guide"});
+  B.txt(Q0/2,(P0+P1_)/2,"− ΔP · Q = "+eur((P0-P1_)*Q0),{cls:"anno",dy:-10});
+  B.txt(Q0/2,(P0+P1_)/2,"lost on units already sold",{cls:"anno",dy:14});
+  B.txt(Q1,P1_*0.55,"+ P · ΔQ",{cls:"anno",dx:14,dy:-6,anchor:"start"});
+  B.txt(Q1,P1_*0.55,"= "+eur(P1_*dq),{cls:"anno",dx:14,dy:10,anchor:"start"});
+  B.dot(Q0,P0,{r:3.5,fill:"var(--demand)"});
+  B.dot(Q1,P1_,{r:3.5,fill:"var(--demand)"});
+
+  const net = P1_*dq - (P0-P1_)*Q0;
+
+  return {
+    eyebrow:"Plate 2 · Market power",
+    h1:"Marginal revenue",
+    text:`
+      <p class="lead">With a single seller, the demand curve facing the firm <em>is</em> the market demand curve: <span class="m">d = D</span>. Choosing a price and choosing a quantity are the same decision, so we let the monopolist pick <span class="m">Q</span>.</p>
+      <div class="eq">P(Q) = a − bQ<br>TR(Q) = P(Q)·Q = aQ − bQ²<br><b>MR(Q) = a − 2bQ &nbsp;&lt;&nbsp; P(Q)</b> for every Q &gt; 0</div>
+      <p>Why is <span class="m">MR</span> below the price? Panel (b) splits the extra revenue in two. Selling <span class="m">ΔQ</span> more units at the new price is a <b>gain</b> of <span class="m">P·ΔQ</span> (solid). But to sell them the firm must cut the price on the <b>inframarginal units</b> it was already selling: a <b>loss</b> of <span class="m">ΔP·Q</span> (hatched).</p>
+      <div class="eq">MR = P &nbsp;+&nbsp; Q·(dP/dQ) &nbsp;=&nbsp; P − bQ<br><span style="color:var(--ink-3)">gain on the marginal unit&nbsp;&nbsp;·&nbsp;&nbsp;loss on the rest</span></div>
+      <p>A competitive firm has no inframarginal loss — it is too small to move the price — which is why <span class="m">MR = p</span> there and <span class="m">MR &lt; p</span> here.</p>
+      <p class="note">Note what is <em>missing</em>: a monopoly market has <em>no supply curve</em>. A supply curve answers "how much would you sell at a price someone hands you?", and nobody hands a monopolist a price.</p>`,
+    ctrls:`
+      <div class="ctrl"><label>Demand intercept <b>a = ${fmt(a,0)}</b></label>
+        <input type="range" data-num="p2.a" min="60" max="140" step="5" value="${a}"></div>
+      <div class="ctrl"><label>Demand slope <b>b = ${fmt(b,2)}</b></label>
+        <input type="range" data-num="p2.b" min="0.4" max="2" step="0.1" value="${b}"></div>
+      <div class="ctrl"><label>Extra units sold <b>ΔQ = ${fmt(dq,0)}</b></label>
+        <input type="range" data-num="p2.dq" min="2" max="24" step="1" value="${dq}"></div>`,
+    stats:[
+      ["Start Q", fmt(Q0,1)],["Price there", eur(P0)],
+      ["New price", eur(P1_)],["Gain P·ΔQ", eur(P1_*dq)],
+      ["Loss ΔP·Q", eur((P0-P1_)*Q0)],["Net ΔTR", (net>=0?"+":"−")+eur(Math.abs(net))],
+      ["MR per unit", fmt(net/dq,1)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 2a — Demand and marginal revenue","Same intercept a, twice the slope: MR hits zero halfway along the demand curve and turns negative after that."),
+      fig(B.svg(),"Fig. 2b — Why MR &lt; P","Solid: revenue from the new units. Hatched: revenue lost on the units already being sold. MR is the net of the two.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- monopoly numbers shared by plates 3, 4, 10 ---------- */
+function monoNums(){
+  const {a,b,c} = S.mon;
+  const Qm = (a-c)/(2*b), Pm = (a+c)/2;
+  const Qc = (a-c)/b,     Pc = c;
+  const CSm = 0.5*(a-Pm)*Qm, PSm = (Pm-c)*Qm;
+  const DWL = 0.5*(Pm-c)*(Qc-Qm);
+  const CSc = 0.5*(a-Pc)*Qc;
+  return {a,b,c,Qm,Pm,Qc,Pc,CSm,PSm,TSm:CSm+PSm,DWL,CSc,PSc:0,TSc:CSc,
+          lerner:(Pm-c)/Pm, elas:Pm/(b*Qm)};
+}
+
+function monoPlot(opt){
+  const n = monoNums(), o = opt||{};
+  const Qmax = n.a/n.b;
+  const P = Plot({w:o.w||580,h:o.h||440,x0:0,x1:Qmax*1.04,y0:0,y1:n.a*1.06,padR:84,
+    xlab:"Q", ylab:"€", aria:o.aria||"Monopoly equilibrium with demand, marginal revenue and marginal cost."});
+  P.axes(autoTicks(0,Qmax,5), autoTicks(0,n.a,5));
+  return {P,n,Qmax};
+}
+
+/* ---------- Plate 3: monopoly equilibrium ---------- */
+function plate3(){
+  const {P,n,Qmax} = monoPlot({aria:"The monopolist sets MR equal to MC to find Q sub M, then reads the price off the demand curve."});
+  const st = S.mon, build = st.build;
+  const D = Q => n.a - n.b*Q, MR = Q => n.a - 2*n.b*Q;
+
+  P.curve(Q=>n.c,{cls:"c-s",w:2.4,label:"MC = c",tcls:"t-s",labelAt:Qmax*0.99,ldy:-9});
+  P.curve(D,{from:0,to:Qmax,cls:"c-d",w:2.6,label:"D",tcls:"t-d",labelAt:Qmax*0.95,ldy:-8});
+  if(build>=1) P.curve(MR,{from:0,to:Qmax/2,cls:"c-mr",w:2.4,dash:"8 4",label:"MR",tcls:"t-mr",labelAt:Qmax*0.45,ldy:-12});
+  if(build>=2){
+    P.seg(n.Qm,0,n.Qm,n.c,{cls:"c-ink",w:1.4,dash:"4 3"});
+    P.dot(n.Qm,n.c,{r:4.5,fill:"var(--supply)",label:"MR = MC",ldx:10,ldy:16});
+    P.txt(n.Qm,0,"Q_M = "+fmt(n.Qm,0),{cls:"tick",dy:28});
+  }
+  if(build>=3){
+    P.seg(n.Qm,n.c,n.Qm,n.Pm,{cls:"c-ink",w:1.4,dash:"4 3"});
+    P.seg(0,n.Pm,n.Qm,n.Pm,{cls:"c-ink",w:1.4,dash:"4 3"});
+    P.dot(n.Qm,n.Pm,{r:5,fill:"var(--demand)",label:"P_M = "+fmt(n.Pm,0),ldx:10,ldy:-10});
+    P.seg(n.Qm,n.c,n.Qm,n.Pm,{cls:"c-dwl",w:5});
+    P.txt(n.Qm,(n.c+n.Pm)/2,"mark-up",{cls:"anno",dx:-10,anchor:"end"});
+    P.dot(n.Qc,n.Pc,{r:4,fill:"var(--ink)",label:"competitive point",ldx:-10,ldy:-12,anchor:"end"});
+    P.seg(n.Qc,0,n.Qc,n.Pc,{cls:"guide"});
+    P.txt(n.Qc,0,"Q_C = "+fmt(n.Qc,0),{cls:"tick",dy:28});
+  }
+
+  return {
+    eyebrow:"Plate 3 · Market power",
+    h1:"Monopoly equilibrium",
+    text:`
+      <p class="lead">The construction has two moves, and students routinely collapse them into one. The <em>quantity</em> comes from the intersection of <span class="k k-mr">MR</span> and <span class="k k-s">MC</span>. The <em>price</em> comes from the <span class="k k-d">demand</span> curve above that quantity — never from the MR curve.</p>
+      <div class="eq">MR = MC: &nbsp; a − 2bQ = c &nbsp;⟹&nbsp; <b>Q<sub>M</sub> = (a − c) / 2b = ${fmt(n.Qm,1)}</b><br>
+      Read off D: &nbsp; <b>P<sub>M</sub> = a − bQ<sub>M</sub> = (a + c)/2 = ${fmt(n.Pm,1)}</b></div>
+      <p>Compare with the competitive benchmark, where price is driven down to marginal cost: <span class="m">P<sub>C</sub> = c = ${fmt(n.c,0)}</span> and <span class="m">Q<sub>C</sub> = (a−c)/b = ${fmt(n.Qc,0)}</span>. The monopolist sells <b>exactly half</b> the competitive quantity — that is not a coincidence of these numbers, it is what <span class="m">2b</span> does.</p>
+      <h2>Market power, measured</h2>
+      <p>Price above marginal cost <em>is</em> market power. The mark-up and the elasticity of demand are two views of the same number:</p>
+      <div class="eq">Lerner index = (P − MC)/P = ${fmt(n.lerner*100,1)}%<br>
+      |ε| at Q<sub>M</sub> = P/(bQ) = ${fmt(n.elas,2)} &nbsp;&nbsp;⟹&nbsp;&nbsp; 1/|ε| = ${fmt(1/n.elas*100,1)}%</div>
+      <p>The two agree because the monopolist's first-order condition <em>is</em> the mark-up rule <span class="m">(P − MC)/P = 1/|ε|</span>. Flatter demand (more elastic) ⟹ smaller mark-up. And note <span class="m">|ε| &gt; 1</span> always holds at the optimum: while demand is inelastic, raising the price raises revenue <em>and</em> cuts cost, so the firm keeps going.</p>
+      <h2>Fixed cost: none here, and it would change nothing</h2>
+      <p>Cost here is linear with <b>no fixed component</b>: <span class="m">C(Q) = cQ</span>, so <span class="m">MC = AC = c</span> and profit equals producer surplus. Add a fixed cost <span class="m">F</span> and the figure does not move at all — <span class="m">MR = MC</span> cannot see <span class="m">F</span> — but the bottom line becomes</p>
+      <div class="eq">π = (P<sub>M</sub> − c)·Q<sub>M</sub> − <b>F</b> = ${eur(n.PSm)} − F<br>
+      so π &lt; 0 once F &gt; ${eur(n.PSm)}</div>
+      <p>So a monopolist can hold a ${fmt(n.lerner*100,0)}% mark-up and still lose money. <b>Market power is about marginal cost; profitability is about average cost.</b></p>
+      <p class="note">Reference: Pindyck &amp; Rubinfeld, ch. 10. The argument is unchanged with a rising MC.</p>`,
+    ctrls:`
+      <div class="ctrl" style="min-width:auto"><label>Build the figure</label>
+        <div class="seg">
+          <button type="button" data-seg="mon.build" data-val="0" aria-pressed="${build==0}">D and MC</button>
+          <button type="button" data-seg="mon.build" data-val="1" aria-pressed="${build==1}">+ MR</button>
+          <button type="button" data-seg="mon.build" data-val="2" aria-pressed="${build==2}">+ Q<sub>M</sub></button>
+          <button type="button" data-seg="mon.build" data-val="3" aria-pressed="${build==3}">+ P<sub>M</sub></button>
+        </div></div>
+      <div class="ctrl"><label>Intercept <b>a = ${fmt(n.a,0)}</b></label>
+        <input type="range" data-num="mon.a" min="60" max="140" step="5" value="${n.a}"></div>
+      <div class="ctrl"><label>Slope <b>b = ${fmt(n.b,2)}</b></label>
+        <input type="range" data-num="mon.b" min="0.5" max="2" step="0.1" value="${n.b}"></div>
+      <div class="ctrl"><label>Marginal cost <b>c = ${fmt(n.c,0)}</b></label>
+        <input type="range" data-num="mon.c" min="0" max="70" step="2" value="${n.c}"></div>`,
+    stats:[
+      ["Q<sub>M</sub>", fmt(n.Qm,1)],["P<sub>M</sub>", eur(n.Pm,1)],
+      ["Q<sub>C</sub>", fmt(n.Qc,1)],["P<sub>C</sub>", eur(n.Pc,1)],
+      ["Mark-up", fmt(n.lerner*100,1)+"%"],["|ε| at Q<sub>M</sub>", fmt(n.elas,2)],
+      ["Profit", eur(n.PSm)]
+    ],
+    figs:[fig(P.svg(),"Fig. 3 — The monopoly construction","Quantity from MR = MC; price from the demand curve. The competitive point sits where D crosses MC.")],
+    figCls:"figs one"
+  };
+}
+
+/* ---------- Plate 4: monopoly welfare ---------- */
+function plate4(){
+  const st = S.mon;
+  const mk = (which)=>{
+    const {P,n,Qmax} = monoPlot({w:560,h:430,aria:which==="mono"
+      ? "Monopoly: consumer surplus is the small upper triangle, producer surplus the rectangle, and a hatched triangle of deadweight loss sits between them and the competitive quantity."
+      : "Perfect competition: consumer surplus is the whole triangle between demand and price, and there is no deadweight loss."});
+    const D = Q => n.a - n.b*Q;
+    const Q = which==="mono" ? n.Qm : n.Qc;
+    const Pr = which==="mono" ? n.Pm : n.Pc;
+    if(st.cs) P.poly([[0,Pr],[Q,Pr],[0,n.a]],{cls:"f-cs"});
+    if(st.ps) P.poly([[0,n.c],[Q,n.c],[Q,Pr],[0,Pr]],{cls:"f-ps"});
+    if(st.dwl && which==="mono") P.poly([[n.Qm,n.c],[n.Qc,n.c],[n.Qm,n.Pm]],{cls:"f-dwl",hatch:true});
+    P.curve(()=>n.c,{cls:"c-s",w:2.2,label:"MC",tcls:"t-s",labelAt:Qmax*0.99,ldy:-9});
+    P.curve(D,{from:0,to:Qmax,cls:"c-d",w:2.4,label:"D",tcls:"t-d",labelAt:Qmax*0.95,ldy:-8});
+    if(which==="mono") P.curve(Q2=>n.a-2*n.b*Q2,{from:0,to:Qmax/2,cls:"c-mr",w:2,dash:"8 4",label:"MR",tcls:"t-mr",labelAt:Qmax*0.45,ldy:-12});
+    P.seg(0,Pr,Q,Pr,{cls:"c-ink",w:1.2,dash:"4 3"});
+    P.seg(Q,0,Q,Pr,{cls:"c-ink",w:1.2,dash:"4 3"});
+    P.dot(Q,Pr,{r:4.5,fill:"var(--demand)"});
+    if(st.cs) P.txt(Q*0.42,(Pr+n.a)/2,"A",{cls:"big",dy:4});
+    if(st.ps) P.txt(Q*0.5,(n.c+Pr)/2,which==="mono"?"B + C":"D",{cls:"big",dy:4});
+    if(st.dwl && which==="mono") P.txt(n.Qm+(n.Qc-n.Qm)*0.34,n.c+(n.Pm-n.c)*0.3,"E",{cls:"big",dy:4});
+    P.txt(Q,0,(which==="mono"?"Q_M = ":"Q_C = ")+fmt(Q,0),{cls:"tick",dy:28});
+    P.txt(0,Pr,(which==="mono"?"P_M":"P_C"),{cls:"tick",dx:-30,dy:4,anchor:"start"});
+    return P.svg();
+  };
+  const n = monoNums();
+
+  return {
+    eyebrow:"Plate 4 · Market power",
+    h1:"Surplus and deadweight loss",
+    text:`
+      <p class="lead">Surplus is the standard yardstick. <span class="k k-d">Consumer surplus</span> is what buyers would have been willing to pay minus what they did pay; <span class="k k-s">producer surplus</span> is revenue minus variable cost. Total surplus is their sum, weighting every euro equally regardless of whose pocket it sits in.</p>
+      <div class="eq">CS = ½·(a − P)·Q &nbsp;=&nbsp; <b>${eur(n.CSm)}</b> under monopoly<br>PS = (P − c)·Q &nbsp;=&nbsp; <b>${eur(n.PSm)}</b><br>DWL = ½·(P<sub>M</sub> − c)·(Q<sub>C</sub> − Q<sub>M</sub>) &nbsp;=&nbsp; <b>${eur(n.DWL)}</b></div>
+      <p>Going from competition to monopoly, area <b>B</b> is <em>transferred</em> from consumers to the firm — unpleasant for buyers, but not a loss to society. Area <b>E</b> is different: it belongs to nobody. Those are units that consumers value above the cost of making them (<span class="m">a − bQ &gt; c</span>) and that simply do not get produced.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Area</th><th>Competition</th><th>Monopoly</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>Consumer surplus</td><td>${eur(n.CSc)}</td><td>${eur(n.CSm)}</td><td>−${eur(n.CSc-n.CSm)}</td></tr>
+          <tr><td>Producer surplus</td><td>${eur(0)}</td><td>${eur(n.PSm)}</td><td>+${eur(n.PSm)}</td></tr>
+          <tr><td>Total surplus</td><td>${eur(n.CSc)}</td><td>${eur(n.TSm)}</td><td>−${eur(n.DWL)}</td></tr>
+        </tbody></table></div>
+      <p><b>Fixed cost.</b> None on this plate, which is why PS and profit coincide. Add <span class="m">F</span> and every area is unchanged — PS is measured against <em>marginal</em> cost — only profit falls to <span class="m">PS − F</span>. <b>The deadweight loss does not depend on F</b>: it comes from units not produced, not from overheads.</p>
+      <p>So the monopolist gains less than consumers lose. The difference is the deadweight loss, and it is the reason competition authorities exist — in Spain the <abbr title="Comisión Nacional de los Mercados y la Competencia">CNMC</abbr> and, above it, the European Commission under Articles 101 and 102 TFEU.</p>
+      <p class="note">What can a government do? A <em>price cap</em> at <span class="m">P<sub>C</sub></span> restores the competitive outcome; a <em>per-unit subsidy</em> shifts MC down to <span class="m">c − s</span> and does too, at the taxpayer's expense; a <em>tax</em> makes it worse. Careful with a natural monopoly (<span class="m">MC &lt; AC</span>): a cap at MC then means losses.</p>`,
+    ctrls:`
+      <label class="chk"><input type="checkbox" data-bool="mon.cs" ${st.cs?"checked":""}> Consumer surplus (A)</label>
+      <label class="chk"><input type="checkbox" data-bool="mon.ps" ${st.ps?"checked":""}> Producer surplus (B + C / D)</label>
+      <label class="chk"><input type="checkbox" data-bool="mon.dwl" ${st.dwl?"checked":""}> Deadweight loss (E)</label>
+      <div class="ctrl"><label>Intercept <b>a = ${fmt(n.a,0)}</b></label>
+        <input type="range" data-num="mon.a" min="60" max="140" step="5" value="${n.a}"></div>
+      <div class="ctrl"><label>Marginal cost <b>c = ${fmt(n.c,0)}</b></label>
+        <input type="range" data-num="mon.c" min="0" max="70" step="2" value="${n.c}"></div>`,
+    stats:[
+      ["CS monopoly", eur(n.CSm)],["PS monopoly", eur(n.PSm)],
+      ["TS monopoly", eur(n.TSm)],["TS competition", eur(n.CSc)],
+      ["Deadweight loss", eur(n.DWL)],["DWL share of TS<sub>C</sub>", fmt(n.DWL/n.CSc*100,1)+"%"]
+    ],
+    figs:[
+      fig(mk("mono"),"Fig. 4a — Monopoly","A = consumer surplus, B + C = producer surplus, E = deadweight loss (hatched)."),
+      fig(mk("pc"),"Fig. 4b — Perfect competition","Price falls to MC. A + B + C + E is now split as consumer surplus (A + B) and producer surplus; nothing is hatched.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 5: assumptions + flat individual demand ---------- */
+function plate5(){
+  const N = S.p5.N;
+  const A0 = 100, B0 = 0.5, Sa = 10, Sb = 0.25;      // D: P=100-0.5Q ; S: P=10+0.25Q
+  const Qs = (A0-Sa)/(B0+Sb), Ps = A0-B0*Qs;          // 120, 40
+  const qi = Qs/N;
+
+  const M = Plot({w:560,h:420,x0:0,x1:200,y0:0,y1:106,padR:76,
+    xlab:"Q", ylab:"€", aria:"The market: a downward sloping demand curve crossing an upward sloping supply curve at the equilibrium price and quantity."});
+  M.axes(ticks(0,200,40), ticks(0,100,20));
+  M.curve(Q=>A0-B0*Q,{from:0,to:200,cls:"c-d",w:2.6,label:"D",tcls:"t-d",labelAt:196,ldy:-6});
+  M.curve(Q=>Sa+Sb*Q,{from:0,to:200,cls:"c-s",w:2.6,label:"S",tcls:"t-s",labelAt:196,ldy:-6});
+  M.seg(0,Ps,Qs,Ps,{cls:"guide"});
+  M.seg(Qs,0,Qs,Ps,{cls:"guide"});
+  M.dot(Qs,Ps,{r:5,fill:"var(--ink)",label:"P* = "+fmt(Ps,0),ldx:10,ldy:-10});
+  M.txt(Qs,0,"Q* = "+fmt(Qs,0),{cls:"tick",dy:28});
+  // this firm's slice
+  M.poly([[Qs-qi,0],[Qs,0],[Qs,Ps],[Qs-qi,Ps]],{cls:"f-ps"});
+  M.txt(Qs-qi/2,Ps,"one firm: q* = "+fmt(qi,2),{cls:"anno",dy:-36,anchor:"end",dx:-2});
+
+  const win = qi*2;
+  // the firm's own marginal revenue on its residual demand: MR = P* - b q*
+  const mrFirm = Ps - B0*qi;
+  const gapPct = (Ps-mrFirm)/Ps*100;
+  const F = Plot({w:560,h:420,x0:0,x1:win,y0:0,y1:106,padR:76,
+    xlab:"q", ylab:"€", aria:"The same demand curve drawn over one firm's range of output: the narrower the range, the flatter the curve looks."});
+  F.axes([{v:0,t:"0"},{v:win/2,t:fmt(win/2,2)},{v:win,t:fmt(win,2)}], ticks(0,100,20));
+  F.curve(q=>Ps+B0*(qi-q),{from:0,to:win,cls:"c-d",w:2.6,label:"d",tcls:"t-d",labelAt:win*0.98,ldy:-8});
+  F.seg(0,Ps,win,Ps,{cls:"guide"});
+  F.seg(qi,0,qi,Ps,{cls:"guide"});
+  F.dot(qi,Ps,{r:5,fill:"var(--ink)"});
+  F.txt(qi,0,"q*",{cls:"tick",dy:28});
+  F.txt(win*0.5,Ps,"whole range of prices here: "+eur(B0*win,2),{cls:"anno",dy:26});
+  F.txt(win*0.04,Ps,"P*",{cls:"anno",dy:-10,anchor:"start"});
+  if(N===1) F.txt(win*0.5,Ps*0.45,"this firm IS the market",{cls:"anno"});
+
+  return {
+    eyebrow:"Plate 5 · Price takers",
+    h1:"The assumptions of perfect competition",
+    text:`
+      <div class="cards">
+        <div class="card"><span class="num">ASSUMPTION 1</span><h3>Product homogeneity</h3><p>All firms sell (almost) the same good, so buyers have no reason to pay one seller more than another.</p></div>
+        <div class="card"><span class="num">ASSUMPTION 2</span><h3>Price-taking behaviour</h3><p>Every firm and every consumer is tiny relative to the market. No one's own decision moves the price.</p></div>
+        <div class="card"><span class="num">ASSUMPTION 3</span><h3>Free entry and exit</h3><p>Firms can enter to chase profits or leave to avoid losses; consumers can switch sellers at no cost.</p></div>
+      </div>
+      <p>(Textbooks often add a fourth, <em>perfect information</em> about prices and quality. Wheat and electricity spot markets come close; taxis, mobile phones and aircraft do not — and asking <em>which assumption fails</em> is usually the interesting question.)</p>
+      <p class="lead">Assumption 2 is the one that does the analytical work, and it is not an extra postulate — it follows from being small. Both panels draw the <em>same</em> demand curve with the <em>same</em> slope <span class="m">−b = −0.5</span>. Only the horizontal scale changes.</p>
+      <div class="eq">market: 0 → 200 units on the axis&nbsp;&nbsp;⟹&nbsp;&nbsp;price moves by ${eur(B0*200)}<br>one firm: 0 → ${fmt(win,2)} units on the axis&nbsp;&nbsp;⟹&nbsp;&nbsp;price moves by ${eur(B0*win,2)}</div>
+      <p>Take the three cases in turn. With <span class="m">Q* = 120</span> split between <span class="m">N</span> equal firms, each one produces <span class="m">q* = Q*/N</span>:</p>
+      <div class="eq">N = 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; q* = Q* = 120<br>
+      N = 100&nbsp;&nbsp; q* = 1.20<br>
+      N = 200&nbsp;&nbsp; q* = 0.60</div>
+      <p>At <b>N = 1</b> the firm's demand curve <em>is</em> the market demand curve — that is Plate 2, the monopolist. At <b>N = 100</b> or <b>200</b> the same curve, over the range the firm can actually reach, is a horizontal line <span class="m">d</span> at <span class="m">P*</span>. Monopoly and perfect competition are two ends of one story, not two unrelated models.</p>
+      <h2>Is MR really equal to the price?</h2>
+      <p>Strictly, no — and it is worth saying so out loud rather than letting students discover it as a gotcha. The residual demand still slopes down, so the same algebra as Plate 2 gives <span class="m">MR = P* − b·q*</span>: the gap is proportional to the firm's own output, and</p>
+      <div class="eq">MR = P* &nbsp;⟹&nbsp; the rule from Plate 1 becomes <b>P* = MC(q*)</b></div>
+      <p><b>Price-taking rounds that gap to zero.</b> The justification is not that demand is genuinely flat, but that <span class="m">b·q*</span> vanishes as the firm's share shrinks: one firm carries the whole price effect, two hundred firms carry 1/200th each. ${N===1?"(At N = 1 the read-out above is the monopolist's MR <em>evaluated at q = 120</em> — a quantity it would never choose. Its optimum is in Plate 3.)":""}</p>
+      <p class="note">Perfect competition is rare but indispensable: it is the <em>benchmark</em>. Worst possible market structure for firms, best possible one for consumers. Reference: Pindyck &amp; Rubinfeld, ch. 8–9.</p>`,
+    ctrls:`
+      <div class="ctrl" style="min-width:auto"><label>Number of firms in the market</label>
+        <div class="seg">
+          <button type="button" data-seg="p5.N" data-val="1" aria-pressed="${N===1}">N = 1</button>
+          <button type="button" data-seg="p5.N" data-val="100" aria-pressed="${N===100}">N = 100</button>
+          <button type="button" data-seg="p5.N" data-val="200" aria-pressed="${N===200}">N = 200</button>
+        </div></div>`,
+    stats:[
+      ["Firms", fmt(N,0)],["Market Q*", fmt(Qs,0)],["Each firm q*", fmt(qi,2)],
+      ["Market price P*", eur(Ps)],["Firm's MR", fmt(mrFirm,2)],
+      ["P* − MR", eur(Ps-mrFirm,2)],["as % of P*", fmt(gapPct,2)+"%"]
+    ],
+    figs:[
+      fig(M.svg(),"Fig. 5a — The market","Demand slopes down, supply slopes up, and their crossing fixes P*. The shaded sliver is one firm's output."),
+      fig(F.svg(),"Fig. 5b — One firm's view","The identical curve over that sliver. At N = 1 it is the market demand; by N ≈ 100 it is a horizontal line at P*.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 6: short-run choice ---------- */
+function plate6(){
+  const p = S.p6.p;
+  const q = supply_i(p);
+  const shut = q===0;
+  const rev = p*q, vc = VC(q), tc = TC(q), pi = rev-tc, ps = rev-vc;
+
+  const A = Plot({w:560,h:440,x0:0,x1:7,y0:0,y1:72,padR:76,
+    xlab:"q", ylab:"€/unit", aria:"Marginal cost, average variable cost and average cost for one firm, with a horizontal price line picking out the optimal quantity."});
+  A.axes(ticks(0,7,1), ticks(0,70,10));
+  if(!shut){
+    A.poly((function(){
+      const pts=[[0,p]];
+      for(let i=0;i<=60;i++){const x=q*i/60; pts.push([x,p]);}
+      for(let i=60;i>=0;i--){const x=q*i/60; pts.push([x,Math.min(p,MC(x))]);}
+      return pts;
+    })(),{cls:"f-ps"});
+  }
+  A.curve(AC,{from:1.2,to:7,cls:"c-ac",w:2.2,label:"AC",tcls:"t-ac",labelAt:1.8,ldx:10,ldy:-4});
+  A.curve(AVC,{from:0.1,to:7,cls:"c-avc",w:2,dash:"6 3",label:"AVC",tcls:"t-avc",labelAt:6.15,ldy:16});
+  A.curve(MC,{from:0,to:7,cls:"c-s",w:2.6,label:"MC",tcls:"t-s",labelAt:5.72,ldy:-6});
+  A.seg(0,p,7,p,{cls:"c-d",w:2.2});
+  A.txt(6.95,p,"p = MR = AR",{cls:"anno",dy:-9,anchor:"end"});
+  A.dot(Q_MINAVC,P_SHUT,{r:4,fill:"var(--supply)",label:"shut-down point",ldx:-10,ldy:-10,anchor:"end"});
+  // the AC-AVC gap is FC/q: say so on the figure itself
+  A.seg(6.45,AVC(6.45),6.45,AC(6.45),{cls:"c-ink",w:1.6});
+  A.txt(6.45,(AVC(6.45)+AC(6.45))/2,"= FC/q",{cls:"anno",dx:9,dy:4,anchor:"start"});
+  if(!shut){
+    A.seg(q,0,q,p,{cls:"guide"});
+    A.dot(q,p,{r:4.5,fill:"var(--ink)"});
+    A.txt(q,0,"q* = "+fmt(q,2),{cls:"tick",dy:28});
+    A.dot(q,AC(q),{r:3.5,fill:"var(--supply)"});
+    A.txt(q*0.5,(p+AC(q))/2,"PS",{cls:"big",dy:4});
+  }else{
+    A.txt(3.5,p,"p &lt; min AVC = "+fmt(P_SHUT,0)+" → produce nothing",{cls:"anno",dy:-12});
+  }
+
+  // (b) the accounting, as bars
+  const B = Plot({w:560,h:440,x0:0,x1:10,y0:0,y1:400,padL:58,padR:60,padB:46,
+    xlab:"", ylab:"€", aria:"Revenue compared with variable and fixed cost, showing producer surplus and profit as two different residuals."});
+  B.axes([{v:2.2,t:"revenue"},{v:6.2,t:"total cost"}], ticks(0,400,50));
+  B.poly([[1,0],[3.4,0],[3.4,rev],[1,rev]],{cls:"f-cs"});
+  B.poly([[5,0],[7.4,0],[7.4,vc],[5,vc]],{cls:"f-ps"});
+  B.poly([[5,vc],[7.4,vc],[7.4,tc],[5,tc]],{cls:"f-ps",hatch:true});
+  B.txt(2.2,rev/2,"p·q* = "+eur(rev),{cls:"anno",dy:4});
+  B.txt(6.2,vc/2,"VC = "+eur(vc),{cls:"anno",dy:4});
+  B.txt(6.2,(vc+tc)/2,"FC = "+eur(FIRM.F),{cls:"anno",dy:4});
+  B.seg(8.2,vc,8.2,rev,{cls:"c-s",w:3});
+  B.txt(8.2,(vc+rev)/2,"PS = "+eur(ps),{cls:"anno",dx:8,dy:4,anchor:"start"});
+  B.seg(9.3,tc,9.3,rev,{cls:"c-ink",w:3});
+  B.txt(9.3,(tc+rev)/2,"π = "+(pi<0?"−":"")+eur(Math.abs(pi)),{cls:"anno",dx:8,dy:4,anchor:"start"});
+
+  const verdict = shut
+    ? {c:"down", s:`At p = ${fmt(p,0)} the firm cannot even cover its variable cost. <b>Shut down:</b> produce 0 and lose only the fixed cost, €${FIRM.F}.`}
+    : (pi>=0
+      ? {c:"up", s:`Produce q* = ${fmt(q,2)}. Price covers average cost (${fmt(p,1)} ≥ ${fmt(AC(q),1)}), so <b>profit is positive</b>.`}
+      : {c:"", s:`Produce q* = ${fmt(q,2)} anyway. Profit is negative (${eur(pi)}) but producer surplus is positive, so shutting down would lose <b>more</b>. Keep going in the short run.`});
+
+  return {
+    eyebrow:"Plate 6 · Price takers",
+    h1:"The short-run output decision",
+    text:`
+      <p class="lead">A price taker's marginal revenue is the price, so Plate 1's rule collapses to <span class="m">p = MC(q*)</span>. That pins down the best <em>positive</em> quantity. It does not tell you whether producing at all beats closing the doors for the season.</p>
+      <div class="eq"><b>p = MC(q*)</b> &nbsp;&nbsp;·&nbsp;&nbsp; best positive quantity<br>
+      Shut down if &nbsp; p·q* − VC(q*) &lt; 0 &nbsp;⟺&nbsp; <b>p &lt; AVC(q*)</b></div>
+      <p><b>Why FC drops out.</b> The fixed cost here is <span class="m">FC = €${FIRM.F}</span> — the rent, the licence, the machine already bought. In the short run it is paid <em>whichever</em> option the firm picks, so it appears on both sides of the comparison and cancels:</p>
+      <div class="eq">produce:&nbsp;&nbsp; π = p·q* − VC(q*) − <b>FC</b><br>
+      shut down: π = 0 − 0 − <b>FC</b> = −FC<br>
+      produce iff &nbsp; p·q* − VC(q*) &gt; 0 &nbsp;⟺&nbsp; p &gt; AVC(q*)&nbsp;&nbsp;<span style="color:var(--ink-3)">← no FC left</span></div>
+      <p>Shutting down saves the variable cost, not the fixed one. Hence the shut-down price is the minimum of <b>AVC</b>, not of AC — €${fmt(P_SHUT,0)} at <span class="m">q = ${fmt(Q_MINAVC,0)}</span>, where MC cuts AVC from below. A cost you can still avoid is not fixed for this decision.</p>
+      <div class="verdict ${verdict.c}">${verdict.s}</div>
+      <h2>Producer surplus is not profit</h2>
+      <p>Panel (b) keeps the two apart, which is where most exam points are lost:</p>
+      <div class="eq">PS = revenue − variable cost = ${eur(ps)}<br>π &nbsp;= revenue − total cost &nbsp;&nbsp;= ${eur(pi)}<br><b>PS = π + FC</b> &nbsp;=&nbsp; ${eur(pi)} + ${eur(FIRM.F)}</div>
+      <ul>
+        <li>They differ by the fixed cost and nothing else.</li>
+        <li>So a firm can rationally run a loss in the short run: while <span class="m">PS &gt; 0</span> it covers its variable cost and chips away at an FC it owes anyway.</li>
+        <li>In the long run nothing is fixed, so <span class="m">FC = 0</span>, <span class="m">AC = AVC</span>, and the two coincide.</li>
+      </ul>
+      <p class="note">Cost function: <span class="m">TC(q) = 50 + 40q − 12q² + 1.5q³</span> — that is <em>FC = 50</em> and <span class="m">VC(q) = 40q − 12q² + 1.5q³</span>, giving <span class="m">MC = 40 − 24q + 4.5q²</span>, <span class="m">AVC = 40 − 12q + 1.5q²</span> and <span class="m">AC = AVC + 50/q</span>. The vertical gap between AC and AVC <em>is</em> FC/q, which is why it narrows as output grows. Min AVC = ${fmt(P_SHUT,0)} at q = ${fmt(Q_MINAVC,0)}; min AC = ${fmt(P_LR,2)} at q = ${fmt(Q_MINAC,2)}.</p>`,
+    ctrls:`
+      <div class="ctrl" style="flex:1;min-width:240px"><label>Market price <b>p = ${fmt(p,0)}</b></label>
+        <input type="range" data-num="p6.p" min="6" max="60" step="1" value="${p}"></div>`,
+    stats:[
+      ["q*", shut?"0":fmt(q,2)],["Revenue", eur(rev)],["Variable cost", eur(vc)],
+      ["Fixed cost", eur(FIRM.F)],["Producer surplus", eur(ps)],["Profit", eur(pi)],
+      ["AC at q*", shut?"—":eur(AC(q),1)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 6a — The firm's cost curves","MC crosses AVC and AC at their minima. The firm slides along MC until it reaches the price line."),
+      fig(B.svg(),"Fig. 6b — The same choice in euros","Producer surplus subtracts variable cost only; profit subtracts fixed cost too. The gap between the brackets is FC.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 7: individual supply curve ---------- */
+function plate7(){
+  const p = S.p7.p, tr = S.p7.trace;
+  const q = supply_i(p);
+
+  const A = Plot({w:560,h:440,x0:0,x1:7,y0:0,y1:72,padR:76,
+    xlab:"q", ylab:"€/unit", aria:"Sweeping the price up the diagram traces out the firm's supply curve along marginal cost above minimum average variable cost."});
+  A.axes(ticks(0,7,1), ticks(0,70,10));
+  A.curve(AVC,{from:0.1,to:7,cls:"c-avc",w:1.8,dash:"6 3",label:"AVC",tcls:"t-avc",labelAt:6.15,ldy:14});
+  A.curve(AC,{from:1.2,to:7,cls:"c-ac",w:1.8,label:"AC",tcls:"t-ac",labelAt:6.6,ldy:-10});
+  A.curve(MC,{from:0,to:Q_MINAVC,cls:"c-avc",w:2,dash:"3 3"});
+  A.curve(MC,{from:Q_MINAVC,to:7,cls:"c-s",w:3.4,label:"s(p) = MC",tcls:"t-s",labelAt:5.75,ldy:-8});
+  tr.forEach(t=>{
+    if(t.q>0) A.dot(t.q,t.p,{r:2.8,fill:"var(--supply)"});
+    else A.dot(0.06,t.p,{r:2.8,fill:"var(--ink-3)"});
+  });
+  A.seg(0,p,7,p,{cls:"c-d",w:1.8});
+  A.dot(Q_MINAVC,P_SHUT,{r:4,fill:"var(--supply)",label:"min AVC = "+fmt(P_SHUT,0),ldx:-10,ldy:-10,anchor:"end"});
+  if(q>0){A.seg(q,0,q,p,{cls:"guide"}); A.dot(q,p,{r:4.5,fill:"var(--ink)"});}
+  else A.txt(0.35,p,"q = 0",{cls:"anno",dy:-8,anchor:"start"});
+
+  // (b) extracted supply curve on (q,p) axes
+  const B = Plot({w:560,h:440,x0:0,x1:7,y0:0,y1:72,padR:76,
+    xlab:"q", ylab:"p", aria:"The extracted individual supply curve: zero below the shut-down price, then jumping to four units and rising along marginal cost."});
+  B.axes(ticks(0,7,1), ticks(0,70,10));
+  B.seg(0,0,0,P_SHUT,{cls:"c-s",w:3.4});
+  B.curve(MC,{from:Q_MINAVC,to:7,cls:"c-s",w:3.4,label:"s(p)",tcls:"t-s",labelAt:5.75,ldy:-8});
+  B.seg(0,P_SHUT,Q_MINAVC,P_SHUT,{cls:"c-s",w:1.6,dash:"4 3"});
+  B.dot(0,P_SHUT,{r:4,fill:"var(--panel)"});
+  B.dot(Q_MINAVC,P_SHUT,{r:4,fill:"var(--supply)"});
+  B.txt(Q_MINAVC/2,P_SHUT,"discontinuity: 0 → "+fmt(Q_MINAVC,0)+" units",{cls:"anno",dy:-10});
+  B.txt(0.1,P_SHUT/2,"nothing supplied",{cls:"anno",dx:8,dy:0,anchor:"start"});
+  if(q>0){B.seg(0,p,q,p,{cls:"guide"}); B.dot(q,p,{r:4.5,fill:"var(--ink)",label:"("+fmt(q,2)+", "+fmt(p,0)+")",ldx:10,ldy:-8});}
+
+  return {
+    eyebrow:"Plate 7 · Price takers",
+    h1:"The individual supply curve",
+    text:`
+      <p class="lead">Nothing new is needed here. Hand the firm a price, let it solve <span class="m">p = MC</span>, write down the answer, and repeat. The locus of answers <em>is</em> the individual supply curve.</p>
+      <div class="eq">s(p) = &nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if p &lt; min AVC = ${fmt(P_SHUT,0)}<br>
+      s(p) = &nbsp;MC<sup>−1</sup>(p) &nbsp; if p ≥ min AVC</div>
+      <p>Press <em>Sweep the price</em> and watch the dots pile up on the marginal cost curve. Two features are worth pausing on:</p>
+      <ul class="plain">
+        <li>Only the <em>rising</em> branch of MC is used. The falling branch fails the second-order condition — there, raising output lowers marginal cost, so profit is still climbing.</li>
+        <li>The curve <em>jumps</em>. Below €${fmt(P_SHUT,0)} the firm supplies nothing; at €${fmt(P_SHUT,0)} it supplies ${fmt(Q_MINAVC,0)} units. Supply is not continuous at the shut-down price.</li>
+      </ul>
+      <p><b>The fixed cost is nowhere in this curve.</b> Supply is built out of MC, and MC does not contain FC — so raising the rent does not shift the short-run supply curve by one millimetre, and neither does lowering it. FC decides only <em>whether the firm is in the market</em>, through two different thresholds:</p>
+      <div class="eq">short run: produce if p ≥ min AVC = ${fmt(P_SHUT,0)}&nbsp;&nbsp;<span style="color:var(--ink-3)">(FC sunk, ignore it)</span><br>
+      long run:&nbsp; stay&nbsp;&nbsp;&nbsp; if p ≥ min AC&nbsp; = ${fmt(P_LR,2)}&nbsp;&nbsp;<span style="color:var(--ink-3)">(FC avoidable, count it)</span></div>
+      <p>In the long run nothing is fixed, so <span class="m">AVC = AC</span> and the relevant branch is MC above <em>minimum average cost</em>. The long-run curve therefore starts higher than the short-run one, which is exactly why a firm rides out a bad season and still exits eventually: between €${fmt(P_SHUT,0)} and €${fmt(P_LR,2)} it is worth producing today and not worth renewing the lease.</p>
+      <p class="note">One reading of producer surplus follows immediately: the area between the price line and the supply curve. Since supply <em>is</em> marginal cost, that area is <span class="m">p·q − ∫MC = p·q − VC</span> — the definition from Plate 6.</p>`,
+    ctrls:`
+      <div class="ctrl" style="flex:1;min-width:220px"><label>Price handed to the firm <b>p = ${fmt(p,0)}</b></label>
+        <input type="range" data-num="p7.p" min="6" max="60" step="1" value="${p}"></div>
+      <button class="act" type="button" data-act="sweep">Sweep the price ↑</button>
+      <button class="act" type="button" data-act="clear">Clear dots</button>`,
+    stats:[
+      ["Price", eur(p)],["Quantity supplied", q>0?fmt(q,2):"0"],
+      ["Shut-down price", eur(P_SHUT)],["Long-run price floor", eur(P_LR,2)],
+      ["Points traced", fmt(tr.length,0)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 7a — Tracing the answers","Each price gives one optimal quantity. The heavy line is MC above min AVC: the supply curve."),
+      fig(B.svg(),"Fig. 7b — The supply curve alone","Drawn on its own axes, with the jump at the shut-down price made explicit.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 8: aggregation ---------- */
+function plate8(){
+  const N = S.p8.N, p = S.p8.p;
+  const qi = supply_i(p), Q = N*qi;
+  // FIXED horizontal scale: the axis must not rescale with N, otherwise the
+  // curve looks the same at every N and the whole point is lost
+  const Qmax = 250;
+
+  const A = Plot({w:520,h:430,x0:0,x1:7,y0:0,y1:66,padR:70,
+    xlab:"q", ylab:"p", aria:"One firm's supply curve."});
+  A.axes(ticks(0,7,1), ticks(0,60,10));
+  A.seg(0,0,0,P_SHUT,{cls:"c-s",w:3});
+  A.curve(MC,{from:Q_MINAVC,to:6.2,cls:"c-s",w:3,label:"s(p)",tcls:"t-s",labelAt:5.7,ldy:-8});
+  A.seg(0,p,7,p,{cls:"c-d",w:1.8});
+  if(qi>0){A.seg(qi,0,qi,p,{cls:"guide"});A.dot(qi,p,{r:4.5,fill:"var(--ink)",label:fmt(qi,2),ldx:9,ldy:-8});}
+  A.txt(3.5,P_SHUT,"min AVC",{cls:"anno",dy:-8});
+
+  const B = Plot({w:520,h:430,x0:0,x1:Qmax,y0:0,y1:66,padR:70,
+    xlab:"Q", ylab:"P", aria:"Market supply is the horizontal sum of the individual supply curves: at each price, multiply one firm's quantity by the number of firms."});
+  B.axes(autoTicks(0,Qmax,5), ticks(0,60,10));
+  const mktSupply = (n)=>{
+    const pts=[];
+    for(let i=0;i<=140;i++){
+      const pp = P_SHUT + (66-P_SHUT)*i/140;
+      pts.push([n*supply_i(pp), pp]);
+    }
+    return pts;
+  };
+  // reference: a single firm on the market scale, so the sweep to the right
+  // as N grows is visible against something fixed
+  B.line(mktSupply(1),{cls:"c-ghost",w:1.6,dash:"5 4"});
+  B.txt(supply_i(60),58,"N = 1",{cls:"anno",dx:10,anchor:"start"});
+  B.seg(0,0,0,P_SHUT,{cls:"c-s",w:3});
+  B.line(mktSupply(N),{cls:"c-s",w:3});
+  B.seg(0,P_SHUT,N*Q_MINAVC,P_SHUT,{cls:"c-s",w:1.6,dash:"4 3"});
+  B.seg(0,p,Qmax,p,{cls:"c-d",w:1.8});
+  if(Q>0){
+    B.seg(Q,0,Q,p,{cls:"guide"});
+    B.dot(Q,p,{r:4.5,fill:"var(--ink)",label:"Q = "+fmt(Q,1),ldx:9,ldy:-8});
+  }
+  B.txt(Qmax*0.55,44,"S(P) = N · s(P)",{cls:"clab t-s",anchor:"middle"});
+  B.txt(Qmax*0.55,44,"N = "+fmt(N,0),{cls:"anno",anchor:"middle",dy:20});
+
+  return {
+    eyebrow:"Plate 8 · Price takers",
+    h1:"From individual to market supply",
+    text:`
+      <p class="lead">Every firm faces the same price, so market supply at that price is just the sum of what each firm wants to sell. Geometrically: fix a height, add the widths.</p>
+      <div class="eq"><b>S(P) = Σ<sub>i</sub> s<sub>i</sub>(P) = N · s(P)</b> &nbsp;(identical firms)<br>
+      at P = ${fmt(p,0)}: &nbsp; each firm ${fmt(qi,2)} units &nbsp;×&nbsp; ${fmt(N,0)} firms &nbsp;=&nbsp; <b>${fmt(Q,1)} units</b></div>
+      <p>Two consequences fall out of the algebra, and both matter later:</p>
+      <ul class="plain">
+        <li><b>Market supply is flatter than individual supply.</b> Multiplying quantities by <span class="m">N</span> divides the slope by <span class="m">N</span>. With many firms, a small price rise draws out a lot of output — which is precisely why no single firm can push the price around.</li>
+        <li><b>The kink survives aggregation.</b> The shut-down price is the same for every firm here — min AVC = €${fmt(P_SHUT,0)}, which depends on the variable cost only, not on the €${FIRM.F} fixed cost — so the whole industry switches on at €${fmt(P_SHUT,0)}, jumping straight to ${fmt(N*Q_MINAVC,0)} units. With <em>heterogeneous</em> firms the jumps happen at different prices and the aggregate curve smooths out — a more realistic picture.</li>
+      </ul>
+      <p>Both axes are <em>fixed</em>: the left panel always runs 0 to 7 units, the right one always 0 to ${fmt(Qmax,0)}. Nothing rescales as you move <span class="m">N</span>, so the market curve visibly swings out to the right — compare it against the dashed <span class="m">N = 1</span> curve, which is panel (a) redrawn on the market scale.</p>
+      <p class="note">Horizontal summation is the same operation used for market demand, done to the other side of the market.</p>`,
+    ctrls:`
+      <div class="ctrl"><label>Number of firms <b>N = ${fmt(N,0)}</b></label>
+        <input type="range" data-num="p8.N" min="1" max="40" step="1" value="${N}"></div>
+      <div class="ctrl"><label>Price <b>P = ${fmt(p,0)}</b></label>
+        <input type="range" data-num="p8.p" min="6" max="58" step="1" value="${p}"></div>`,
+    stats:[
+      ["Firms", fmt(N,0)],["Price", eur(p)],["Each firm", qi>0?fmt(qi,2):"0"],
+      ["Market quantity", fmt(Q,1)],["Slope ratio", "1 : "+fmt(N,0)]
+    ],
+    figs:[
+      fig(A.svg(),"Fig. 8a — One firm","The supply curve from Plate 7, unchanged."),
+      fig(B.svg(),"Fig. 8b — The industry","Fixed axis, 0 to 250 units. Every quantity multiplied by N at the same height: the curve keeps its shape, loses its steepness and sweeps right as firms are added. Dashed: the same curve for N = 1.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 9: equilibrium, short run and long run ---------- */
+function plate9(){
+  const st = S.p9, N = st.N, A = st.A, B0 = MKT.B;
+  const e = marketEq(N, A, B0);
+  const Qmax = Math.max(200, A/B0*1.05);
+  const ymax = Math.max(70, A*1.08);
+
+  const M = Plot({w:560,h:440,x0:0,x1:Qmax,y0:0,y1:ymax,padR:74,
+    xlab:"Q", ylab:"P", aria:"Market demand crossing aggregate supply fixes the equilibrium price and quantity; consumer and producer surplus are the areas between the curves and the price."});
+  M.axes(autoTicks(0,Qmax,5), autoTicks(0,ymax*0.97,5));
+  if(st.areas){
+    M.poly([[0,e.P],[e.Q,e.P],[0,A]],{cls:"f-cs"});
+    if(e.P>P_SHUT){
+      // price line out to Q*, then back down along supply to the shut-down price
+      const pts=[[0,e.P],[e.Q,e.P]];
+      for(let i=60;i>=0;i--){const pp=P_SHUT+(e.P-P_SHUT)*i/60; pts.push([N*supply_i(pp),pp]);}
+      pts.push([0,P_SHUT]);
+      M.poly(pts,{cls:"f-ps"});
+    }
+  }
+  M.curve(Q=>A-B0*Q,{from:0,to:A/B0,cls:"c-d",w:2.6,label:"D",tcls:"t-d",labelAt:A/B0*0.94,ldy:-8});
+  (function(){
+    const pts=[];
+    for(let i=0;i<=160;i++){const pp=P_SHUT+(ymax-P_SHUT)*i/160; pts.push([N*supply_i(pp),pp]);}
+    M.line(pts,{cls:"c-s",w:2.6});
+    // label the supply curve where it is still inside the frame
+    let lab = pts[0];
+    for(const pt of pts){ if(pt[0] <= Qmax*0.58) lab = pt; }
+    M.txt(lab[0],lab[1],"S = N·s",{cls:"clab t-s",dx:10,dy:-6,anchor:"start"});
+  })();
+  M.seg(0,P_SHUT,N*Q_MINAVC,P_SHUT,{cls:"c-s",w:1.4,dash:"4 3"});
+  M.seg(0,e.P,e.Q,e.P,{cls:"guide"});
+  M.seg(e.Q,0,e.Q,e.P,{cls:"guide"});
+  M.dot(e.Q,e.P,{r:5,fill:"var(--ink)",label:"P* = "+fmt(e.P,1),ldx:10,ldy:-10});
+  M.txt(e.Q,0,"Q* = "+fmt(e.Q,0),{cls:"tick",dy:28});
+  if(st.areas){
+    M.txt(e.Q*0.3,(e.P+A)/2,"CS",{cls:"big",dy:4});
+    if(e.P>P_SHUT+2) M.txt(e.Q*0.35,(P_SHUT+e.P)/2,"PS",{cls:"big",dy:4});
+  }
+
+  // deliberately the SAME price scale as the market panel, so the price line
+  // sits at the same height in both figures and moves in step
+  const F = Plot({w:560,h:440,x0:0,x1:7,y0:0,y1:ymax,padR:74,
+    xlab:"q", ylab:"€/unit", aria:"The same price drawn in the individual firm's diagram, with the profit rectangle between price and average cost."});
+  F.axes(ticks(0,7,1), autoTicks(0,ymax*0.97,5));
+  if(e.q>0){
+    const cls = "f-k";
+    F.poly([[0,Math.min(e.P,AC(e.q))],[e.q,Math.min(e.P,AC(e.q))],[e.q,Math.max(e.P,AC(e.q))],[0,Math.max(e.P,AC(e.q))]],{cls});
+  }
+  F.curve(AC,{from:1.2,to:7,cls:"c-ac",w:2.2,label:"AC",tcls:"t-ac",labelAt:6.6,ldy:-10});
+  F.curve(AVC,{from:0.2,to:7,cls:"c-avc",w:1.6,dash:"6 3",label:"AVC",tcls:"t-avc",labelAt:6.15,ldy:14});
+  F.curve(MC,{from:0,to:7,cls:"c-s",w:2.6,label:"MC",tcls:"t-s",labelAt:5.72,ldy:-6});
+  F.seg(0,e.P,7,e.P,{cls:"c-d",w:2.2});
+  F.txt(0.15,e.P,"d = P*",{cls:"anno",dy:-9,anchor:"start"});
+  F.dot(Q_MINAC,P_LR,{r:4,fill:"var(--supply)"});
+  F.txt(Q_MINAC,P_LR,"min AC = "+fmt(P_LR,1),{cls:"anno",dy:24});
+  if(e.q>0){
+    F.seg(e.q,0,e.q,e.P,{cls:"guide"});
+    F.dot(e.q,e.P,{r:4.5,fill:"var(--ink)"});
+    F.txt(e.q,0,"q* = "+fmt(e.q,2),{cls:"tick",dy:28});
+    F.txt(e.q,Math.max(e.P,AC(e.q)),(e.pi>=0?"π = ":"loss = ")+eur(Math.abs(e.pi),1),{cls:"big",dx:13,dy:-13,anchor:"start"});
+  }
+
+  const Nstar = ((A-P_LR)/B0)/Q_MINAC;
+  const verdict = Math.abs(e.pi)<1
+    ? {c:"", s:`Profit is essentially zero: the market is in <b>long-run equilibrium</b> with N* ≈ ${fmt(Nstar,0)} firms, each at minimum average cost.`}
+    : (e.pi>0
+      ? {c:"up", s:`Each firm earns ${eur(e.pi,1)}. Outsiders see that, <b>enter</b>, supply shifts right and the price falls — until profit is gone at N* ≈ ${fmt(Nstar,0)}.`}
+      : {c:"down", s:`Each firm loses ${eur(Math.abs(e.pi),1)}. Firms <b>exit</b>, supply shifts left and the price rises — until the losses stop at N* ≈ ${fmt(Nstar,0)}.`});
+
+  return {
+    eyebrow:"Plate 9 · Price takers",
+    h1:"Competitive equilibrium",
+    text:`
+      <p class="lead">This is the pair of figures to draw on the board together. The <em>market</em> panel determines <span class="m">P*</span> where <span class="k k-s">S = N·s</span> meets <span class="k k-d">D</span>. The <em>firm</em> panel takes that <span class="m">P*</span> as a horizontal line and reads off <span class="m">q*</span> where it cuts MC. Move anything and both panels move together.</p>
+      <div class="eq">market clearing: &nbsp; N·s(P*) = D(P*) &nbsp;⟹&nbsp; P* = ${fmt(e.P,2)}, Q* = ${fmt(e.Q,1)}<br>
+      each firm: &nbsp; P* = MC(q*) &nbsp;⟹&nbsp; q* = ${fmt(e.q,2)}, &nbsp; π = (P* − AC)·q* = ${eur(e.pi,1)}</div>
+      <div class="verdict ${verdict.c}">${verdict.s}</div>
+      <h2>Free entry closes the model</h2>
+      <p>In the short run <span class="m">N</span> is fixed and profit can be anything. In the long run Assumption 3 does the work: profits attract entry, losses cause exit, and <span class="m">N</span> stops moving only when <span class="m">π = 0</span>. Since <span class="m">π = 0</span> means <span class="m">P = AC</span>, and profit maximisation means <span class="m">P = MC</span>, the long run forces</p>
+      <div class="eq"><b>P* = MC(q*) = AC(q*) = min AC = ${fmt(P_LR,2)}</b></div>
+      <p>MC can only equal AC at the bottom of AC. So each surviving firm ends up at the <em>efficient scale</em> <span class="m">q = ${fmt(Q_MINAC,2)}</span>, and demand decides only how many such firms there are: <span class="m">N* = Q*/q*</span>.</p>
+      <h2>The fixed cost sets the long-run price</h2>
+      <ul>
+        <li>Zero profit uses <em>average</em> cost, so FC is fully inside it. With FC = €${FIRM.F}, min AC = €${fmt(P_LR,2)} is the floor the price is driven to.</li>
+        <li>A larger FC pushes min AC up and to the right: higher long-run price, larger efficient scale, <b>fewer and bigger firms</b>.</li>
+        <li>Push that far enough and min AC is still falling where one firm already covers demand — a natural monopoly.</li>
+      </ul>
+      <p>Note too that FC is why the entry margin and the production margin differ. A firm produces whenever <span class="m">p &gt; </span>min AVC = €${fmt(P_SHUT,0)}, but nobody <em>enters</em> unless <span class="m">p ≥ </span>min AC = €${fmt(P_LR,2)}. The gap between those two numbers is entirely the fixed cost.</p>
+      <p>"Zero profit" sounds like a bankruptcy warning. It is not: the cost function already includes the opportunity cost of the owners' capital. Zero <em>economic</em> profit is a normal return — which is why real firms report healthy <em>accounting</em> profits and the model still holds.</p>
+      <h2>And it is efficient</h2>
+      <p>At <span class="m">P* = MC</span> every unit worth more than its cost gets produced, and no others. Total surplus (CS = ${eur(e.CS)}, PS = ${eur(e.PS)}) is maximal: <b>deadweight loss is zero</b>. Any intervention opens a wedge between what buyers pay and what sellers get, and a tax collects less than the two sides give up.</p>
+      <p class="note">This benchmark is also the contrast case for monopoly, which is a <em>market failure</em> in the same list as externalities and asymmetric information.</p>`,
+    ctrls:`
+      <div class="ctrl"><label>Firms in the market <b>N = ${fmt(N,0)}</b></label>
+        <input type="range" data-num="p9.N" min="4" max="80" step="1" value="${N}"></div>
+      <div class="ctrl"><label>Demand intercept <b>A = ${fmt(A,0)}</b></label>
+        <input type="range" data-num="p9.A" min="60" max="140" step="5" value="${A}"></div>
+      <button class="act" type="button" data-act="entry">Run entry / exit ⟶ long run</button>
+      <label class="chk"><input type="checkbox" data-bool="p9.areas" ${st.areas?"checked":""}> Show CS and PS</label>`,
+    stats:[
+      ["P*", eur(e.P,2)],["Q*", fmt(e.Q,1)],["q* per firm", fmt(e.q,2)],
+      ["Profit per firm", eur(e.pi,1)],["CS", eur(e.CS)],["PS", eur(e.PS)],
+      ["Long-run N*", fmt(Nstar,0)],["Long-run P", eur(P_LR,2)]
+    ],
+    figs:[
+      fig(M.svg(),"Fig. 9a — The market","S is the horizontal sum of N individual supply curves. Its crossing with D fixes the price everyone takes."),
+      fig(F.svg(),"Fig. 9b — A single firm","Same price scale as 9a, so P* sits at the same height in both panels. Profit is the rectangle between P* and AC — positive draws entry, negative forces exit.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+/* ---------- Plate 10: comparison ---------- */
+function plate10(){
+  const n = monoNums();
+  const mk = (which)=>{
+    const Qmax = n.a/n.b;
+    const P = Plot({w:560,h:430,x0:0,x1:Qmax*1.04,y0:0,y1:n.a*1.06,padR:80,
+      xlab:"Q", ylab:"€", aria:which==="mono"
+        ? "Monopoly outcome: higher price, lower quantity, and a hatched deadweight loss triangle."
+        : "Competitive outcome: price equal to marginal cost, larger quantity, no deadweight loss."});
+    P.axes(autoTicks(0,Qmax,5), autoTicks(0,n.a,5));
+    const D = Q=>n.a-n.b*Q;
+    const Q = which==="mono"?n.Qm:n.Qc, Pr = which==="mono"?n.Pm:n.Pc;
+    P.poly([[0,Pr],[Q,D(Q)],[0,n.a]],{cls:"f-cs"});
+    P.poly([[0,n.c],[Q,n.c],[Q,Pr],[0,Pr]],{cls:"f-ps"});
+    if(which==="mono") P.poly([[n.Qm,n.c],[n.Qc,n.c],[n.Qm,n.Pm]],{cls:"f-dwl",hatch:true});
+    P.curve(()=>n.c,{cls:"c-s",w:2.2,label:"MC",tcls:"t-s",labelAt:Qmax*0.99,ldy:-9});
+    P.curve(D,{from:0,to:Qmax,cls:"c-d",w:2.4,label:"D",tcls:"t-d",labelAt:Qmax*0.95,ldy:-8});
+    if(which==="mono") P.curve(Q2=>n.a-2*n.b*Q2,{from:0,to:Qmax/2,cls:"c-mr",w:2,dash:"8 4",label:"MR",tcls:"t-mr",labelAt:Qmax*0.45,ldy:-12});
+    else P.txt(Qmax*0.5,n.c,"P = MC: no wedge",{cls:"anno",dy:18});
+    P.seg(0,Pr,Q,Pr,{cls:"c-ink",w:1.2,dash:"4 3"});
+    P.seg(Q,0,Q,Pr,{cls:"c-ink",w:1.2,dash:"4 3"});
+    P.dot(Q,Pr,{r:4.5,fill:"var(--demand)"});
+    P.txt(Q,0,(which==="mono"?"Q_M":"Q_C")+" = "+fmt(Q,0),{cls:"tick",dy:28});
+    P.txt(0,Pr,(which==="mono"?"P_M = ":"P_C = ")+fmt(Pr,0),{cls:"tick",dx:6,dy:-8,anchor:"start"});
+    if(which==="mono") P.txt(n.Qm+(n.Qc-n.Qm)*0.35,n.c+(n.Pm-n.c)*0.3,"DWL",{cls:"big",dy:4});
+    return P.svg();
+  };
+
+  return {
+    eyebrow:"Plate 10 · Verdict",
+    h1:"Monopoly versus competition",
+    text:`
+      <p class="lead">Both panels use the identical linear demand <span class="m">P = ${fmt(n.a,0)} − ${fmt(n.b,2)}Q</span> and the identical constant marginal cost <span class="m">c = ${fmt(n.c,0)}</span>. Nothing about technology or tastes differs. The only difference is market structure, and it is worth <span class="m">${eur(n.DWL)}</span> of destroyed surplus.</p>
+      <div class="tw"><table>
+        <thead><tr><th></th><th>Perfect competition</th><th>Monopoly</th></tr></thead>
+        <tbody>
+          <tr><td>Marginal revenue</td><td>MR = P</td><td>MR = P − bQ &lt; P</td></tr>
+          <tr><td>Optimality condition</td><td>P = MC</td><td>MR = MC &lt; P</td></tr>
+          <tr><td>Price</td><td>${eur(n.Pc)}</td><td>${eur(n.Pm)}</td></tr>
+          <tr><td>Quantity</td><td>${fmt(n.Qc,0)}</td><td>${fmt(n.Qm,0)}</td></tr>
+          <tr><td>Mark-up (P−MC)/P</td><td>0%</td><td>${fmt(n.lerner*100,0)}%</td></tr>
+          <tr><td>Consumer surplus</td><td>${eur(n.CSc)}</td><td>${eur(n.CSm)}</td></tr>
+          <tr><td>Producer surplus</td><td>${eur(0)}</td><td>${eur(n.PSm)}</td></tr>
+          <tr><td>Total surplus</td><td>${eur(n.CSc)}</td><td>${eur(n.TSm)} &nbsp;(DWL ${eur(n.DWL)})</td></tr>
+        </tbody></table></div>
+      <h2>Four things to carry out of the room</h2>
+      <ul class="plain">
+        <li><b>MR = MC is universal.</b> It comes from <span class="m">max π = TR − TC</span> and says nothing about competition. What differs across market structures is the <span class="m">MR</span> curve, never the rule.</li>
+        <li><b>Price-taking is a consequence, not an assumption about virtue.</b> A firm that is small relative to the market faces a flat demand curve because it can only see a sliver of a downward-sloping one (Plate 5).</li>
+        <li><b>Supply curves come from marginal cost, and monopolies have none.</b> A supply curve answers a question — "how much at price p?" — that a price-setter is never asked.</li>
+        <li><b>The deadweight loss is about missing units, not high prices.</b> Area E counts the trades that would have made both sides better off and did not happen. A pure transfer from consumers to the firm, however large, is not deadweight loss.</li>
+        <li><b>Fixed cost never enters a marginal decision.</b> Both panels here assume <span class="m">C(Q) = cQ</span> with no fixed cost, which is why PS equals profit. Put an <span class="m">F</span> back in and <em>nothing</em> in either figure moves — not P, not Q, not CS, PS or DWL — because <span class="m">F</span> is invisible to MC. All that changes is profit, to <span class="m">PS − F</span> in both market structures. FC governs entry and exit decisions; MR = MC governs quantity.</li>
+      </ul>
+      <p class="note">Where next: most real markets sit between these poles. With a few interdependent firms we need game theory: Cournot quantity competition, Bertrand price competition, and the possibility of collusion.</p>`,
+    ctrls:`
+      <div class="ctrl"><label>Intercept <b>a = ${fmt(n.a,0)}</b></label>
+        <input type="range" data-num="mon.a" min="60" max="140" step="5" value="${n.a}"></div>
+      <div class="ctrl"><label>Slope <b>b = ${fmt(n.b,2)}</b></label>
+        <input type="range" data-num="mon.b" min="0.5" max="2" step="0.1" value="${n.b}"></div>
+      <div class="ctrl"><label>Marginal cost <b>c = ${fmt(n.c,0)}</b></label>
+        <input type="range" data-num="mon.c" min="0" max="70" step="2" value="${n.c}"></div>`,
+    stats:[
+      ["Price ratio", fmt(n.Pm/Math.max(n.Pc,0.01),2)+"×"],["Quantity ratio", fmt(n.Qm/n.Qc,2)+"×"],
+      ["CS lost", eur(n.CSc-n.CSm)],["Transfer to firm", eur(n.PSm)],
+      ["Deadweight loss", eur(n.DWL)],["Surplus destroyed", fmt(n.DWL/n.CSc*100,1)+"%"]
+    ],
+    figs:[
+      fig(mk("pc"),"Fig. 10a — Perfect competition","Price driven to marginal cost. Total surplus is the whole triangle under D and above MC."),
+      fig(mk("mono"),"Fig. 10b — Monopoly","Quantity halved, price raised to (a+c)/2. The hatched triangle is surplus that simply disappears.")
+    ],
+    figCls:"figs two"
+  };
+}
+
+const BUILDERS = {1:plate1,2:plate2,3:plate3,4:plate4,5:plate5,6:plate6,7:plate7,8:plate8,9:plate9,10:plate10};
+
+/* ============================================================
+   5. Shell
+   ============================================================ */
+const stage = document.getElementById("stage");
+const railEl = document.getElementById("rail");
+
+function buildRail(){
+  let html="", last="";
+  PLATES.forEach(p=>{
+    if(p.g!==last && last!==""){ html += `<li class="group">${p.g}</li>`; }
+    last = p.g;
+    html += `<li><button type="button" data-goto="${p.n}" aria-current="${p.n===S.step}"><i>${String(p.n).padStart(2,"0")}</i><span>${p.t}</span></button></li>`;
+  });
+  railEl.innerHTML = html;
+}
+
+// The opening "lead" paragraph belongs above the figures; the rest of the
+// argument goes underneath them.
+function splitLead(html){
+  const m = html.match(/^\s*<p class="lead">[\s\S]*?<\/p>/);
+  return m ? [m[0], html.slice(m[0].length)] : ["", html];
+}
+const headHTML = d => {
+  const [lead] = splitLead(d.text);
+  return `<p class="eyebrow">${d.eyebrow}</p><h1>${d.h1}</h1><div class="rule"></div>${lead}`;
+};
+const proseHTML = d => splitLead(d.text)[1];
+const statsHTML = d => (d.stats||[]).map(s=>`<div class="stat"><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join("");
+
+// Full rebuild (new plate, or a control set that changed shape).
+function render(){
+  const d = BUILDERS[S.step]();
+  stage.innerHTML = `
+    <section class="step">
+      <header class="phead" id="pheadBox">${headHTML(d)}</header>
+      <div class="ctrls" id="ctrlBox">${d.ctrls||""}</div>
+      <dl class="stats" id="statsBox">${statsHTML(d)}</dl>
+      <div class="${d.figCls||"figs"}" id="figsBox">${d.figs.join("")}</div>
+      <div class="prose" id="proseBox">${proseHTML(d)}</div>
+    </section>`;
+  document.getElementById("cnt").textContent = "Plate "+S.step+" of "+PLATES.length;
+  railEl.querySelectorAll("[data-goto]").forEach(b=>{
+    b.setAttribute("aria-current", String(+b.dataset.goto===S.step));
+  });
+  document.getElementById("prev").disabled = S.step===1;
+  document.getElementById("next").disabled = S.step===PLATES.length;
+}
+
+// Live update: leaves the control elements themselves in place, so a slider
+// keeps tracking the pointer while it is being dragged.
+function refresh(){
+  const box = document.getElementById("ctrlBox");
+  if(!box){ render(); return; }
+  const d = BUILDERS[S.step]();
+  document.getElementById("pheadBox").innerHTML = headHTML(d);
+  document.getElementById("proseBox").innerHTML = proseHTML(d);
+  document.getElementById("statsBox").innerHTML = statsHTML(d);
+  const figs = document.getElementById("figsBox");
+  figs.className = d.figCls||"figs";
+  figs.innerHTML = d.figs.join("");
+  // patch the read-out inside each control label
+  const tmp = document.createElement("div");
+  tmp.innerHTML = d.ctrls||"";
+  const fresh = tmp.querySelectorAll(".ctrl label b");
+  const live  = box.querySelectorAll(".ctrl label b");
+  fresh.forEach((n,i)=>{ if(live[i]) live[i].textContent = n.textContent; });
+  // keep sliders in sync when state moves on its own (animations)
+  box.querySelectorAll("[data-num]").forEach(el=>{
+    if(el !== document.activeElement){
+      const v = getPath(el.dataset.num);
+      if(Number.isFinite(v)) el.value = v;
+    }
+  });
+}
+
+function setPath(path, val){
+  const [g,k] = path.split(".");
+  S[g][k] = val;
+}
+function getPath(path){
+  const [g,k] = path.split(".");
+  return S[g][k];
+}
+
+document.addEventListener("input", ev=>{
+  const t = ev.target;
+  if(t.dataset && t.dataset.num!==undefined){
+    setPath(t.dataset.num, parseFloat(t.value));
+    refresh();
+  }
+});
+document.addEventListener("change", ev=>{
+  const t = ev.target;
+  if(t.dataset && t.dataset.bool!==undefined){ setPath(t.dataset.bool, t.checked); render(); }
+});
+document.addEventListener("click", ev=>{
+  const b = ev.target.closest("button");
+  if(!b) return;
+  if(b.dataset.goto){ stopAnim(); S.step = +b.dataset.goto; render(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+  if(b.id==="prev"){ stopAnim(); S.step=Math.max(1,S.step-1); render(); window.scrollTo({top:0}); return; }
+  if(b.id==="next"){ stopAnim(); S.step=Math.min(PLATES.length,S.step+1); render(); window.scrollTo({top:0}); return; }
+  if(b.dataset.seg){
+    const v = b.dataset.val;
+    setPath(b.dataset.seg, isNaN(+v)?v:+v);
+    render(); return;
+  }
+  if(b.dataset.act==="clear"){ S.p7.trace=[]; render(); return; }
+  if(b.dataset.act==="sweep"){ sweep(); return; }
+  if(b.dataset.act==="entry"){ runEntry(); return; }
+  if(b.id==="theme"){ toggleTheme(); return; }
+  if(b.id==="railToggle"){ toggleRail(); return; }
+});
+document.addEventListener("keydown", ev=>{
+  if(ev.target.matches("input,button")) return;
+  if(ev.key==="ArrowRight"||ev.key===" "){ if(S.step<PLATES.length){S.step++;render();} }
+  if(ev.key==="ArrowLeft"){ if(S.step>1){S.step--;render();} }
+});
+
+/* animations */
+let raf = null;
+function stopAnim(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
+function sweep(){
+  if(raf) cancelAnimationFrame(raf);
+  S.p7.trace = [];
+  let p = 6;
+  const tick = ()=>{
+    p += 1.1;
+    S.p7.p = Math.round(p);
+    S.p7.trace.push({p:S.p7.p, q:supply_i(S.p7.p)});
+    refresh();
+    if(p < 58) raf = requestAnimationFrame(tick); else raf = null;
+  };
+  raf = requestAnimationFrame(tick);
+}
+function runEntry(){
+  if(raf) cancelAnimationFrame(raf);
+  const tick = ()=>{
+    const e = marketEq(S.p9.N, S.p9.A, MKT.B);
+    if(Math.abs(e.pi) < 0.8 || S.p9.N<=4 || S.p9.N>=80){ refresh(); raf=null; return; }
+    const stepN = Math.max(0.35, Math.min(2.5, Math.abs(e.pi)/14));
+    S.p9.N = Math.max(4, Math.min(80, S.p9.N + (e.pi>0 ? stepN : -stepN)));
+    refresh();
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+}
+
+function setRail(off){
+  document.body.setAttribute("data-rail", off ? "off" : "on");
+  const b = document.getElementById("railToggle");
+  b.innerHTML = off ? "<b>›</b> Show plates" : "<b>‹</b> Hide plates";
+  b.setAttribute("aria-expanded", String(!off));
+  try{ localStorage.setItem("mrmc-rail", off?"off":"on"); }catch(e){}
+}
+function toggleRail(){ setRail(document.body.getAttribute("data-rail")!=="off"); }
+
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const next = cur ? (cur==="dark"?"light":"dark") : (dark?"light":"dark");
+  document.documentElement.setAttribute("data-theme", next);
+  try{ localStorage.setItem("mrmc-theme", next); }catch(e){}
+}
+try{
+  const saved = localStorage.getItem("mrmc-theme");
+  if(saved) document.documentElement.setAttribute("data-theme", saved);
+}catch(e){}
+
+buildRail();
+let railOff = false;
+try{ railOff = localStorage.getItem("mrmc-rail")==="off"; }catch(e){}
+setRail(railOff);
+render();
+</script>
+
+</body></html>

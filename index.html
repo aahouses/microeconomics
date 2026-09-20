@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Microeconomics — Interactive Plates</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Taviraj:wght@400;600;700&display=swap">
+<style>
+:root{
+  --display:"Taviraj",Georgia,"Times New Roman",serif;
+  --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
+  --ground:#f0ece8; --panel:#fff; --beige:#d6d1c4;
+  --ink:#000; --ink-2:#4a4741; --ink-3:#7d786f;
+  --orange:#ff5700; --azul:#1a1f6c;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0b0b0c; --panel:#16161a; --beige:#3b362c;
+    --ink:#fff; --ink-2:#c8c4bc; --ink-3:#8e8a82;
+    --orange:#ff7a45; --azul:#93a4ea;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:64px 20px 80px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange);margin:0 0 8px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);
+  line-height:1.08;margin:0 0 6px}
+.rule{height:2px;background:var(--orange);width:56px;margin:16px 0 20px}
+.lead{color:var(--ink-2);max-width:62ch;margin:0 0 36px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--panel);
+  border:1px solid var(--beige);padding:22px 20px;transition:border-color .15s,transform .15s}
+a.card:hover,a.card:focus-visible{border-color:var(--orange);transform:translateY(-2px);outline:none}
+a.card .num{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--orange);display:block;margin-bottom:8px}
+a.card h2{font-family:var(--display);font-weight:600;font-size:21px;margin:0 0 8px;color:var(--azul)}
+a.card p{margin:0;font-size:14px;color:var(--ink-2)}
+a.card .go{display:inline-block;margin-top:14px;font-size:12px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--orange)}
+footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--beige);
+  font-size:13px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">CUNEF Universidad · Microeconomics</p>
+  <h1>Interactive Plates</h1>
+  <div class="rule"></div>
+  <p class="lead">Two interactive decks built around the course diagrams. Every figure responds to
+  the sliders — move a price, drag a curve, and the algebra, the read-outs and the verdict update
+  together. Blue is what the buyer values, orange is what the market charges, black is the outcome.</p>
+
+  <div class="grid">
+    <a class="card" href="utility-maximization.html">
+      <span class="num">Nine plates</span>
+      <h2>Utility Maximization</h2>
+      <p>Bang per buck, the equimarginal principle, indifference curves and the MRS, the budget
+      constraint, the tangency condition, perfect substitutes, and the individual demand curve.</p>
+      <span class="go">Open →</span>
+    </a>
+    <a class="card" href="profit-maximization.html">
+      <span class="num">Ten plates</span>
+      <h2>Profit Maximization</h2>
+      <p>MR = MC as one rule, marginal revenue under market power, monopoly equilibrium, surplus
+      and deadweight loss, the short-run output decision, supply, and competitive equilibrium.</p>
+      <span class="go">Open →</span>
+    </a>
+  </div>
+
+  <footer>Teaching material, Department of Social Sciences &amp; Humanities, CUNEF Universidad.
+  Best viewed on a wide screen; both decks work on a phone.</footer>
+</div>
+</body>
+</html>
